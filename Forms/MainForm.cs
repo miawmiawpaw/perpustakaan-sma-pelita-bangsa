@@ -59,6 +59,8 @@ public class MainForm : Form
     private ComboBox _cmbKategoriBuku = null!;
     private ComboBox _cmbStatusBuku = null!;
     private Button _btnTambahBukuTop = null!;
+    private Panel _pnlActionBuku = null!;
+    private FlowLayoutPanel _pnlActionSirkulasi = null!;
     private Label _lblStripTotal = null!;
     private Label _lblStripTersedia = null!;
     private Label _lblStripDipinjam = null!;
@@ -606,6 +608,7 @@ public class MainForm : Form
 
     private void BeralihMenu(string key)
     {
+        if (_currentUser is Siswa && (key == "ANGGOTA" || key == "LAPORAN")) return;
         if (!_pages.TryGetValue(key, out var target)) return;
 
         foreach (var p in _pages.Values)
@@ -652,8 +655,12 @@ public class MainForm : Form
             _lblGreetingSub.Text = $"Jelajahi koleksi & pantau sirkulasi peminjaman. [Penyimpanan: {statusDbSiswa}]";
         }
 
-        // Tombol Tambah Buku hanya untuk Pustakawan (Role-based UI security)
         _btnTambahBukuTop.Visible = isAdmin;
+        _pnlActionBuku.Visible = isAdmin;
+        _pnlActionSirkulasi.Visible = isAdmin;
+        _btnDetailAksiPinjam.Visible = isAdmin;
+        _pages["ANGGOTA"].Btn.Visible = isAdmin;
+        _pages["LAPORAN"].Btn.Visible = isAdmin;
 
         BeralihMenu("DASBOR");
     }
@@ -882,13 +889,13 @@ public class MainForm : Form
         pnlToolbar.Controls.Add(_btnTambahBukuTop);
 
         // Toolbar Bawah: Tombol Aksi Item
-        var pnlActionBottom = new Panel
+        _pnlActionBuku = new Panel
         {
             Dock = DockStyle.Bottom,
             Height = 56,
             Padding = new Padding(0, 10, 0, 10)
         };
-        panel.Controls.Add(pnlActionBottom);
+        panel.Controls.Add(_pnlActionBuku);
 
         var btnEdit = new Button
         {
@@ -902,7 +909,7 @@ public class MainForm : Form
         };
         btnEdit.FlatAppearance.BorderColor = C_BORDER;
         btnEdit.Click += BtnEditBuku_Click;
-        pnlActionBottom.Controls.Add(btnEdit);
+        _pnlActionBuku.Controls.Add(btnEdit);
 
         var btnHapus = new Button
         {
@@ -916,7 +923,7 @@ public class MainForm : Form
         };
         btnHapus.FlatAppearance.BorderColor = Color.FromArgb(254, 202, 202);
         btnHapus.Click += BtnHapusBuku_Click;
-        pnlActionBottom.Controls.Add(btnHapus);
+        _pnlActionBuku.Controls.Add(btnHapus);
 
         var btnPinjam = new Button
         {
@@ -930,7 +937,7 @@ public class MainForm : Form
         };
         btnPinjam.FlatAppearance.BorderColor = Color.FromArgb(191, 219, 254);
         btnPinjam.Click += BtnPinjamBukuToolbar_Click;
-        pnlActionBottom.Controls.Add(btnPinjam);
+        _pnlActionBuku.Controls.Add(btnPinjam);
 
         var btnKembalikan = new Button
         {
@@ -944,7 +951,7 @@ public class MainForm : Form
         };
         btnKembalikan.FlatAppearance.BorderColor = Color.FromArgb(167, 243, 208);
         btnKembalikan.Click += BtnKembalikanBukuToolbar_Click;
-        pnlActionBottom.Controls.Add(btnKembalikan);
+        _pnlActionBuku.Controls.Add(btnKembalikan);
 
         // Tabel Data Buku
         _gridDataBuku = BuatGridStandar();
@@ -1457,13 +1464,13 @@ public class MainForm : Form
         AddFilterBtn("KEMBALI", "Dikembalikan");
 
         // Tombol Pinjam & Kembali Cepat
-        var pnlActionRight = new FlowLayoutPanel
+        _pnlActionSirkulasi = new FlowLayoutPanel
         {
             Dock = DockStyle.Right,
             Width = 320,
             FlowDirection = FlowDirection.RightToLeft
         };
-        pnlFilter.Controls.Add(pnlActionRight);
+        pnlFilter.Controls.Add(_pnlActionSirkulasi);
 
         var btnKembaliSirkulasi = new Button
         {
@@ -1512,8 +1519,8 @@ public class MainForm : Form
             }
         };
 
-        pnlActionRight.Controls.Add(btnKembaliSirkulasi);
-        pnlActionRight.Controls.Add(btnPinjamSirkulasi);
+        _pnlActionSirkulasi.Controls.Add(btnKembaliSirkulasi);
+        _pnlActionSirkulasi.Controls.Add(btnPinjamSirkulasi);
 
         // Tabel Riwayat Sirkulasi
         _gridSirkulasi = BuatGridStandar();

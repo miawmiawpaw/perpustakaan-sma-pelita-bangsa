@@ -85,16 +85,41 @@ Telah diimplementasikan konektivitas MySQL / MariaDB (XAMPP) melalui `MySqlConne
 
 ### 2.2 Dokumentasi Progres
 
-Dokumentasi tangkapan layar (*screenshot*) progres pengembangan tersimpan pada direktori `screenshots/`:
+Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/`:
 
-1. **Halaman Autentikasi Pengguna**: `screenshots/01_halaman_login.png`  
-   Menampilkan antarmuka login dua peran dengan form validasi username dan password terenkapsulasi.
-2. **Dashboard Pustakawan & Indikator Database**: `screenshots/02_dashboard_admin_mysql.png`  
-   Menampilkan dashboard, metrik perpustakaan, dan indikator `[Penyimpanan: 🟢 MySQL XAMPP Aktif]`.
-3. **Dashboard Siswa**: `screenshots/03_dashboard_siswa.png`  
-   Menampilkan dashboard khusus peran Siswa.
-4. **Verifikasi Data Relasional**: `screenshots/bukti_query_mysql.txt`  
-   Hasil query tabel `pengguna`, `buku`, dan `transaksi` pada database `pbo_perpustakaan`; akun hanya tampilkan username/role, bukan hash atau salt.
+1. **Tampilan halaman login saat aplikasi berjalan**: `screenshots/01_halaman_login.png`.
+2. **Dashboard Pustakawan dengan koneksi MySQL aktif**: `screenshots/02_dashboard_admin_mysql.png`.
+3. **Dashboard Siswa dengan navigasi terbatas**: `screenshots/03_dashboard_siswa.png`.
+4. **Penolakan kredensial salah**: `screenshots/04_login_rejected.png`; dialog menampilkan `Username, password, atau role salah.`.
+5. **Katalog Siswa read-only**: `screenshots/05_siswa_katalog_readonly.png`; buku dan filter terlihat, tombol CRUD/sirkulasi tersembunyi.
+6. **Riwayat peminjaman Siswa**: `screenshots/06_siswa_peminjaman_readonly.png`; aksi pinjam/kembali tersembunyi. Data contoh tidak memiliki transaksi atas nama `siswa`, sehingga tabel kosong; penyaringan data pemilik diperiksa pada kode.
+7. **Manajemen buku Pustakawan**: `screenshots/07_admin_manajemen_buku.png`; menampilkan 9 buku dan kontrol tambah/edit/hapus/sirkulasi.
+8. **Kompilasi proyek**: `screenshots/08_dotnet_build_success.png`; hasil `dotnet build`, 0 warning dan 0 error.
+9. **Publikasi executable Windows**: `screenshots/09_dotnet_publish_success.png`; hasil publish untuk `win-x64` ke `publish/win-x64/` melalui direktori staging.
+
+**Matriks uji aktual**:
+
+| Skenario | Hasil |
+|---|---|
+| `dotnet build` | Lulus; 0 warning, 0 error |
+| Self-check dengan MariaDB XAMPP aktif | Lulus; koneksi 10.4.32-MariaDB, 9 buku, 5 transaksi |
+| Login admin dan siswa dengan akun demo | Lulus; keduanya terautentikasi via MySQL dan hash PBKDF2-SHA256 |
+| Password salah, username tak dikenal, role salah | Ditolak |
+| DB tak tersedia | Login ditolak; fallback hanya memuat data buku/transaksi dari file |
+| Login admin melalui executable hasil publish | Lulus; dashboard menunjukkan MySQL aktif |
+| Login siswa melalui executable hasil publish | Lulus; Anggota/Laporan dan kontrol mutasi/sirkulasi tersembunyi |
+| Katalog Siswa / navigasi Pustakawan | Teruji manual; Siswa read-only, Pustakawan melihat kontrol pengelolaan |
+
+**Perintah uji ulang**:
+
+```powershell
+dotnet build --nologo -v q
+dotnet run --no-build -- --test
+$env:PERPUSTAKAAN_MYSQL_CONNECTION = 'Server=127.0.0.1;Port=1;Database=missing;User ID=x;Password=x;Connection Timeout=1;'
+dotnet run --no-build -- --test
+```
+
+Perintah terakhir menguji mode database tidak tersedia; hasil yang dicatat ialah autentikasi gagal tertutup, sementara data buku/transaksi memakai fallback berkas.
 
 ### 2.3 Kendala yang Dihadapi dan Solusi
 
