@@ -1,0 +1,5 @@
+TRX-001|BK-002|Bumi Manusia|Dimas Saputra|2026-10-12|-|Dipinjam
+TRX-002|BK-005|Hujan|Rizky Pratama|2026-10-21|-|Dipinjam
+TRX-003|BK-001|Laskar Pelangi|Nadia Putri|2026-10-10|2026-10-17|Dikembalikan
+TRX-004|BK-003|Negeri 5 Menara|Ahmad Fadlan|2026-10-11|2026-10-16|Dikembalikan
+TRX-005|BK-006|Pulang|Siti Nurhaliza|2026-10-05|2026-10-15|Dikembalikan (Denda: Rp 3.000)

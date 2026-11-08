@@ -1,0 +1,7 @@
+username	role
+admin	admin
+siswa	siswa
+jumlah_buku
+9
+jumlah_transaksi
+5

@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+publish/
+
+# Java project and generated output; repository is C# only
+JAVA/
+
+# IDE / local settings
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Logs and temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
