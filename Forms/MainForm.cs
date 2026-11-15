@@ -1438,6 +1438,8 @@ public class MainForm : Form
         _lblDetailJudul.Text = buku.Judul;
         _picDetailBuku.Image = null;
         string foto = Path.IsPathRooted(buku.FotoPath) ? buku.FotoPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, buku.FotoPath);
+        if (!File.Exists(foto) && !string.IsNullOrWhiteSpace(buku.FotoPath)) foto = Path.GetFullPath(buku.FotoPath);
+        if (!File.Exists(foto) && !string.IsNullOrWhiteSpace(buku.FotoPath)) foto = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))?.Parent?.FullName ?? "", buku.FotoPath);
         if (!string.IsNullOrWhiteSpace(buku.FotoPath) && File.Exists(foto))
         {
             using var image = Image.FromFile(foto);

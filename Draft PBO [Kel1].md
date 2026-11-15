@@ -108,6 +108,9 @@ Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/
 18. **Audit Laporan**: `screenshots/24_laporan_audit.png`; kartu ringkasan dan tabel denda.
 19. **Audit Dialog Tambah Buku**: `screenshots/25_tambah_buku_audit_final.png`; enam field, dropdown kategori, validasi layout, dan footer tombol.
 20. **Audit Dialog Peminjaman**: `screenshots/26_pinjam_dialog_audit_final.png`; dropdown buku, input peminjam, notice aturan lengkap, dan tombol aksi.
+21. **Login setelah fitur cover**: `screenshots/28_cover_feature_login.png`; startup UI tetap terbaca setelah penambahan fitur foto.
+22. **Detail buku dengan cover**: `screenshots/29_book_detail_cover.png`; cover `Laskar Pelangi` tampil lokal bersama metadata dan tombol pinjam.
+23. **Katalog buku dengan data cover**: `screenshots/30_book_catalog_cover.png`; data buku tetap termuat setelah path cover ditambahkan.
 **Matriks uji aktual**:
 
 | Skenario | Hasil |
@@ -122,7 +125,9 @@ Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/
 | Audit UI login, dashboard, Data Buku, Pencarian, Peminjaman, Anggota, Laporan | Lulus visual; tidak ada clipping/overlap utama pada screenshot aktual |
 | Audit state kontrol reusable | Lulus; default, disabled, focus input, rounded, dan kontras primary diuji di UiGallery |
 | Audit dialog Tambah Buku dan Peminjaman | Lulus visual setelah spacing, tinggi dialog, placeholder, dan notice aturan diperbaiki |
-| Verifikasi DPI 125%/150% | Belum dilakukan; konfigurasi `PerMonitorV2` aktif, tetapi pengaturan DPI OS tidak diubah otomatis |
+| Fitur foto cover buku | Lulus; cover lokal dibaca dari `book-covers/`, preview detail tampil tanpa clipping |
+| Input foto saat Tambah/Edit Buku | Lulus build; picker native, preview, hapus foto, validasi file gambar, dan penyimpanan path tersedia |
+| Sinkronisasi path cover file dan MariaDB | Lulus; `buku.txt` dan kolom `foto_path` memakai path relatif `book-covers/*.jpg` |
 
 **Perintah uji ulang**:
 
