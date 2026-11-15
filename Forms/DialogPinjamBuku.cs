@@ -31,13 +31,15 @@ public class DialogPinjamBuku : Form
     private void InitUI(string? preselectedKode, string? preselectedSiswa)
     {
         Text = "Formulir Peminjaman Buku";
-        Size = new Size(500, 420);
+        ClientSize = new Size(520, 460);
         StartPosition = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
-        BackColor = Color.FromArgb(248, 250, 252);
-        Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+        AcceptButton = _btnPinjam;
+        CancelButton = _btnBatal;
+        BackColor = Theme.Colors.Neutral50;
+        Font = Theme.Fonts.Body;
 
         var panel = new Panel
         {
@@ -70,7 +72,7 @@ public class DialogPinjamBuku : Form
         y += 20;
 
         _cmbBuku.Location = new Point(24, y);
-        _cmbBuku.Size = new Size(435, 30);
+        _cmbBuku.Size = new Size(435, Theme.Sizes.Input);
         _cmbBuku.DropDownStyle = ComboBoxStyle.DropDownList;
 
         foreach (var b in _bukuTersedia)
@@ -119,8 +121,9 @@ public class DialogPinjamBuku : Form
         y += 20;
 
         _txtPeminjam.Location = new Point(24, y);
-        _txtPeminjam.Size = new Size(435, 30);
+        _txtPeminjam.Size = new Size(435, Theme.Sizes.Input);
         _txtPeminjam.BorderStyle = BorderStyle.FixedSingle;
+        _txtPeminjam.PlaceholderText = "Masukkan nama siswa/peminjam";
         if (!string.IsNullOrWhiteSpace(preselectedSiswa))
         {
             _txtPeminjam.Text = preselectedSiswa;
@@ -129,14 +132,15 @@ public class DialogPinjamBuku : Form
         y += 38;
 
         _lblInfoAturan.Location = new Point(24, y);
-        _lblInfoAturan.Size = new Size(435, 45);
-        _lblInfoAturan.ForeColor = Color.FromArgb(146, 64, 14);
-        _lblInfoAturan.BackColor = Color.FromArgb(254, 243, 199);
-        _lblInfoAturan.Padding = new Padding(8);
+        _lblInfoAturan.Size = new Size(435, 60);
+        _lblInfoAturan.ForeColor = Theme.Colors.WarningText;
+        _lblInfoAturan.BackColor = Theme.Colors.WarningFill;
+        _lblInfoAturan.Padding = new Padding(Theme.Spacing.S2);
         _lblInfoAturan.Font = new Font("Segoe UI", 8f, FontStyle.Regular);
-        _lblInfoAturan.Text = "ℹ Ketentuan: Maksimal 3 buku aktif per siswa. Batas masa pinjam 7 hari. Keterlambatan dikenakan denda Rp 1.000 / hari.";
+        _lblInfoAturan.AutoEllipsis = false;
+        _lblInfoAturan.Text = "Ketentuan: Maksimal 3 buku aktif per siswa. Batas masa pinjam 7 hari. Keterlambatan dikenakan denda Rp 1.000 / hari.";
         panel.Controls.Add(_lblInfoAturan);
-        y += 55;
+        y += 70;
 
         _btnPinjam.Text = "Proses Pinjam";
         _btnPinjam.Location = new Point(235, y);
@@ -159,6 +163,7 @@ public class DialogPinjamBuku : Form
         _btnBatal.FlatAppearance.BorderSize = 0;
         _btnBatal.Click += (s, e) => { DialogResult = DialogResult.Cancel; Close(); };
         panel.Controls.Add(_btnBatal);
+        _txtPeminjam.Focus();
     }
 
     private void UpdateInfoBuku()

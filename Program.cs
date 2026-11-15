@@ -9,12 +9,20 @@ static class Program
     [STAThread]
     static void Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "--gallery")
+        {
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            ApplicationConfiguration.Initialize();
+            Application.Run(new UiGallery());
+            return;
+        }
         if (args.Length > 0 && args[0] == "--test")
         {
             RunSelfCheck();
             return;
         }
 
+        Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         ApplicationConfiguration.Initialize();
         Application.Run(new MainForm());
     }

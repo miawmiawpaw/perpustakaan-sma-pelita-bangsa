@@ -96,7 +96,18 @@ Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/
 7. **Manajemen buku Pustakawan**: `screenshots/07_admin_manajemen_buku.png`; menampilkan 9 buku dan kontrol tambah/edit/hapus/sirkulasi.
 8. **Kompilasi proyek**: `screenshots/08_dotnet_build_success.png`; hasil `dotnet build`, 0 warning dan 0 error.
 9. **Publikasi executable Windows**: `screenshots/09_dotnet_publish_success.png`; hasil publish untuk `win-x64` ke `publish/win-x64/` melalui direktori staging.
+10. **Implementasi autentikasi database**: `screenshots/10_kode_autentikasi_database.png`; menampilkan sebagian method `Autentikasi` dan hash PBKDF2. Detail lengkap ada di `Services/DatabaseHelper.cs`.
 
+11. **Gallery kontrol reusable**: `screenshots/27_gallery_disabled_focus.png`; rounded panel/button/input, status badge, disabled button, dan state fokus input teruji.
+12. **Audit login final**: `screenshots/18_login_audit_final.png`; hero, field, role selector, tombol masuk, dan spacing tanpa clipping.
+13. **Audit dashboard**: `screenshots/19_dashboard_audit_final.png`; metric card, tabel transaksi, denda, sidebar, dan koleksi populer.
+14. **Audit Data Buku**: `screenshots/20_data_buku_audit.png`; toolbar, dropdown, tabel, badge status, dan tombol aksi.
+15. **Audit Pencarian Buku**: `screenshots/21_pencarian_audit.png`; search, filter kategori, hasil, panel detail, dan aksi pinjam.
+16. **Audit Peminjaman**: `screenshots/22_peminjaman_audit_final.png`; filter, tombol aksi, tabel, dan status badge compact.
+17. **Audit Anggota**: `screenshots/23_anggota_audit.png`; direktori anggota, kuota, dan status.
+18. **Audit Laporan**: `screenshots/24_laporan_audit.png`; kartu ringkasan dan tabel denda.
+19. **Audit Dialog Tambah Buku**: `screenshots/25_tambah_buku_audit_final.png`; enam field, dropdown kategori, validasi layout, dan footer tombol.
+20. **Audit Dialog Peminjaman**: `screenshots/26_pinjam_dialog_audit_final.png`; dropdown buku, input peminjam, notice aturan lengkap, dan tombol aksi.
 **Matriks uji aktual**:
 
 | Skenario | Hasil |
@@ -108,7 +119,10 @@ Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/
 | DB tak tersedia | Login ditolak; fallback hanya memuat data buku/transaksi dari file |
 | Login admin melalui executable hasil publish | Lulus; dashboard menunjukkan MySQL aktif |
 | Login siswa melalui executable hasil publish | Lulus; Anggota/Laporan dan kontrol mutasi/sirkulasi tersembunyi |
-| Katalog Siswa / navigasi Pustakawan | Teruji manual; Siswa read-only, Pustakawan melihat kontrol pengelolaan |
+| Audit UI login, dashboard, Data Buku, Pencarian, Peminjaman, Anggota, Laporan | Lulus visual; tidak ada clipping/overlap utama pada screenshot aktual |
+| Audit state kontrol reusable | Lulus; default, disabled, focus input, rounded, dan kontras primary diuji di UiGallery |
+| Audit dialog Tambah Buku dan Peminjaman | Lulus visual setelah spacing, tinggi dialog, placeholder, dan notice aturan diperbaiki |
+| Verifikasi DPI 125%/150% | Belum dilakukan; konfigurasi `PerMonitorV2` aktif, tetapi pengaturan DPI OS tidak diubah otomatis |
 
 **Perintah uji ulang**:
 

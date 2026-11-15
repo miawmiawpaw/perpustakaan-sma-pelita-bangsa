@@ -2,6 +2,7 @@ using System.Data;
 using System.Globalization;
 using System.Drawing.Drawing2D;
 using PerpustakaanPelitaBangsa.Models;
+using PerpustakaanPelitaBangsa.Controls;
 using PerpustakaanPelitaBangsa.Services;
 
 namespace PerpustakaanPelitaBangsa.Forms;
@@ -11,20 +12,20 @@ public class MainForm : Form
     // =========================================================================
     // WARNA & TEMA FLAT SLATE MODERN (SAMA PERSIS DENGAN JAVA SWING)
     // =========================================================================
-    public static readonly Color C_NAVY_DARK = Color.FromArgb(27, 54, 93);     // #1B365D - Hero Login
-    public static readonly Color C_PRIMARY = Color.FromArgb(29, 59, 139);      // #1D3B8B - Primary Blue
-    public static readonly Color C_BLUE_ACCENT = Color.FromArgb(37, 99, 235);  // #2563EB
-    public static readonly Color C_BLUE_LIGHT = Color.FromArgb(239, 246, 255); // #EFF6FF
-    public static readonly Color C_BG_APP = Color.FromArgb(248, 250, 252);     // #F8FAFC
-    public static readonly Color C_BORDER = Color.FromArgb(226, 232, 240);     // #E2E8F0
-    public static readonly Color C_TEXT_DARK = Color.FromArgb(15, 23, 42);     // #0F172A
-    public static readonly Color C_TEXT_MUTED = Color.FromArgb(100, 116, 139); // #64748B
-    public static readonly Color C_GREEN_BG = Color.FromArgb(209, 250, 229);   // #D1FAE5
-    public static readonly Color C_GREEN_FG = Color.FromArgb(6, 95, 70);       // #065F46
-    public static readonly Color C_RED_BG = Color.FromArgb(254, 226, 226);     // #FEE2E2
-    public static readonly Color C_RED_FG = Color.FromArgb(153, 27, 27);       // #991B1B
-    public static readonly Color C_AMBER_BG = Color.FromArgb(254, 243, 199);   // #FEF3C7
-    public static readonly Color C_AMBER_FG = Color.FromArgb(146, 64, 14);     // #92400E
+    public static readonly Color C_NAVY_DARK = Theme.Colors.Primary900;
+    public static readonly Color C_PRIMARY = Theme.Colors.Primary700;
+    public static readonly Color C_BLUE_ACCENT = Theme.Colors.Primary600;
+    public static readonly Color C_BLUE_LIGHT = Theme.Colors.Primary50;
+    public static readonly Color C_BG_APP = Theme.Colors.Neutral50;
+    public static readonly Color C_BORDER = Theme.Colors.Neutral200;
+    public static readonly Color C_TEXT_DARK = Theme.Colors.Neutral900;
+    public static readonly Color C_TEXT_MUTED = Theme.Colors.Neutral500;
+    public static readonly Color C_GREEN_BG = Theme.Colors.SuccessFill;
+    public static readonly Color C_GREEN_FG = Theme.Colors.SuccessText;
+    public static readonly Color C_RED_BG = Theme.Colors.DangerFill;
+    public static readonly Color C_RED_FG = Theme.Colors.DangerText;
+    public static readonly Color C_AMBER_BG = Theme.Colors.WarningFill;
+    public static readonly Color C_AMBER_FG = Theme.Colors.WarningText;
 
     private readonly PerpustakaanService _service = new();
     private Pengguna? _currentUser;
@@ -92,14 +93,29 @@ public class MainForm : Form
 
     public MainForm()
     {
+        AutoScaleMode = AutoScaleMode.Dpi;
         DoubleBuffered = true;
         Text = "Sistem Perpustakaan Digital SMA Pelita Bangsa";
-        Size = new Size(1280, 800);
-        MinimumSize = new Size(1100, 700);
+        ClientSize = new Size(1280, 800);
+        MinimumSize = new Size(Theme.Sizes.MinWindowWidth, Theme.Sizes.MinWindowHeight);
         StartPosition = FormStartPosition.CenterScreen;
-        Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
-        BackColor = C_BG_APP;
+        Font = Theme.Fonts.Body;
+        BackColor = Theme.Colors.Neutral50;
 
+        KeyPreview = true;
+        KeyDown += (s, e) =>
+        {
+            if (e.Control && e.KeyCode == Keys.F)
+            {
+                _txtCariBesar?.Focus();
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control && e.KeyCode == Keys.N && _currentUser is Pustakawan)
+            {
+                BtnTambahBuku_Click(s, EventArgs.Empty);
+                e.SuppressKeyPress = true;
+            }
+        };
         Controls.Add(_pnlRoot);
 
         BuildLoginPanel();
@@ -135,45 +151,45 @@ public class MainForm : Form
 
         var lblHeroBrand = new Label
         {
-            Text = "📚  Perpustakaan SMA Pelita Bangsa",
+            Text = "Perpustakaan SMA Pelita Bangsa",
             Font = new Font("Segoe UI", 16f, FontStyle.Bold),
             ForeColor = Color.White,
             AutoSize = true,
-            Location = new Point(48, 48)
+            MaximumSize = new Size(440, 0)
         };
         hero.Controls.Add(lblHeroBrand);
 
         var lblHeroPill = new Label
         {
-            Text = "  SISTEM DIGITALISASI PUSTAKA MODERN  ",
-            Font = new Font("Segoe UI", 8f, FontStyle.Bold),
-            ForeColor = Color.FromArgb(147, 197, 253),
-            BackColor = Color.FromArgb(30, 64, 175),
+            Text = "SISTEM DIGITALISASI PUSTAKA MODERN",
+            Font = Theme.Fonts.Caption,
+            ForeColor = Color.FromArgb(191, 219, 254),
+            BackColor = C_PRIMARY,
             AutoSize = true,
-            Location = new Point(48, 92),
-            Padding = new Padding(6, 4, 6, 4)
+            Padding = new Padding(12, 4, 12, 4),
+            Margin = new Padding(0, Theme.Spacing.S2, 0, Theme.Spacing.S2)
         };
         hero.Controls.Add(lblHeroPill);
 
         var lblHeroTitle = new Label
         {
-            Text = "Kelola Koleksi &\nSirkulasi Buku Lebih Cepat",
-            Font = new Font("Segoe UI", 24f, FontStyle.Bold),
+            Text = "Kelola Koleksi Sirkulasi Buku Lebih Cepat",
+            Font = Theme.Fonts.H1,
             ForeColor = Color.White,
-            AutoSize = true,
-            Location = new Point(48, 140)
+            Location = new Point(48, 140),
+            MaximumSize = new Size(440, 0),
+            AutoSize = true
         };
         hero.Controls.Add(lblHeroTitle);
 
         var lblHeroDesc = new Label
         {
-            Text = "Aplikasi manajemen perpustakaan terpadu sekolah.\n" +
-                   "Mendukung katalog otomatis, pelacakan peminjaman, proteksi kuota,\n" +
-                   "serta perhitungan denda keterlambatan secara otomatis.",
-            Font = new Font("Segoe UI", 10.5f, FontStyle.Regular),
+            Text = "Aplikasi manajemen perpustakaan terpadu sekolah. Mendukung katalog otomatis, pelacakan peminjaman, proteksi kuota, serta perhitungan denda keterlambatan secara otomatis.",
+            Font = Theme.Fonts.Body,
             ForeColor = Color.FromArgb(203, 213, 225),
-            AutoSize = true,
-            Location = new Point(48, 230)
+            Location = new Point(48, 236),
+            MaximumSize = new Size(440, 0),
+            AutoSize = true
         };
         hero.Controls.Add(lblHeroDesc);
 
@@ -190,7 +206,7 @@ public class MainForm : Form
 
         var lblHintTitle = new Label
         {
-            Text = "🔑  AKUN DEMO DATABASE",
+            Text = "AKUN DEMO DATABASE",
             Font = new Font("Segoe UI", 9f, FontStyle.Bold),
             ForeColor = Color.FromArgb(245, 158, 11),
             Dock = DockStyle.Top,
@@ -204,6 +220,15 @@ public class MainForm : Form
             Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = Color.White,
             Dock = DockStyle.Fill
+        };
+        hero.Resize += (s, e) =>
+        {
+            int contentWidth = Math.Max(220, hero.ClientSize.Width - hero.Padding.Left - hero.Padding.Right);
+            lblHeroBrand.MaximumSize = new Size(contentWidth, 0);
+            lblHeroPill.MaximumSize = new Size(contentWidth, 0);
+            lblHeroTitle.Size = new Size(contentWidth, 96);
+            lblHeroDesc.Size = new Size(contentWidth, 88);
+            boxHint.Width = contentWidth;
         };
         boxHint.Controls.Add(lblHintDesc);
 
@@ -242,7 +267,7 @@ public class MainForm : Form
         // Toggle Peran
         var btnRolePustakawan = new Button
         {
-            Text = "👑  Pustakawan",
+            Text = "Pustakawan",
             Location = new Point(72, y),
             Size = new Size(188, 40),
             FlatStyle = FlatStyle.Flat,
@@ -254,7 +279,7 @@ public class MainForm : Form
 
         var btnRoleSiswa = new Button
         {
-            Text = "🎓  Siswa",
+            Text = "Siswa",
             Location = new Point(268, y),
             Size = new Size(188, 40),
             FlatStyle = FlatStyle.Flat,
@@ -299,14 +324,12 @@ public class MainForm : Form
         };
         formContainer.Controls.Add(lblU);
         y += 24;
-        var txtUsername = new TextBox
+        var txtUsername = new RoundedTextBox
         {
             Location = new Point(72, y),
-            Size = new Size(384, 34),
-            Font = new Font("Segoe UI", 11f),
-            BorderStyle = BorderStyle.None,
-            BackColor = Color.FromArgb(248, 250, 252),
-            Padding = new Padding(10, 7, 10, 7)
+            Size = new Size(384, 40),
+            PlaceholderText = "Masukkan username",
+            AccessibleName = "Nama pengguna"
         };
         formContainer.Controls.Add(txtUsername);
         y += 46;
@@ -322,16 +345,14 @@ public class MainForm : Form
         formContainer.Controls.Add(lblP);
         y += 24;
 
-        var txtPassword = new TextBox
+        var txtPassword = new RoundedTextBox
         {
             Location = new Point(72, y),
-            Size = new Size(384, 34),
-            Font = new Font("Segoe UI", 11f),
-            BorderStyle = BorderStyle.None,
-            BackColor = Color.FromArgb(248, 250, 252),
-            Padding = new Padding(10, 7, 10, 7),
-            UseSystemPasswordChar = true
+            Size = new Size(384, 40),
+            PlaceholderText = "Masukkan kata sandi",
+            AccessibleName = "Kata sandi"
         };
+        txtPassword.Input.UseSystemPasswordChar = true;
         formContainer.Controls.Add(txtPassword);
         y += 48;
 
@@ -422,7 +443,7 @@ public class MainForm : Form
 
         var lblBrand1 = new Label
         {
-            Text = "📖  Perpustakaan",
+            Text = "Perpustakaan",
             Font = new Font("Segoe UI", 12f, FontStyle.Bold),
             ForeColor = C_PRIMARY,
             Location = new Point(14, 16),
@@ -466,7 +487,7 @@ public class MainForm : Form
 
         var btnLogout = new Button
         {
-            Text = "🚪  Keluar Akun",
+            Text = "Keluar Akun",
             Dock = DockStyle.Fill,
             FlatStyle = FlatStyle.Flat,
             BackColor = Color.FromArgb(254, 242, 242),
@@ -508,7 +529,7 @@ public class MainForm : Form
 
         _lblGreetingTitle = new Label
         {
-            Text = "Selamat pagi 👋",
+            Text = "Selamat pagi",
             Font = new Font("Segoe UI", 13f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
             Location = new Point(24, 14),
@@ -588,18 +609,18 @@ public class MainForm : Form
             view.Visible = false;
             _pnlContentArea.Controls.Add(view);
 
-            var btn = new Button
+            var btn = new SidebarButton
             {
-                Text = $"  {icon}  {label}",
-                Width = 216,
-                Height = 42,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
-                ForeColor = C_TEXT_DARK,
-                BackColor = Color.White,
+                Text = label,
+                Width = 192,
+                Height = Theme.Sizes.Button,
+                Font = Theme.Fonts.Label,
+                ForeColor = Theme.Colors.Neutral900,
+                BackColor = Theme.Colors.Neutral0,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Cursor = Cursors.Hand,
-                Margin = new Padding(0, 2, 0, 2)
+                Margin = new Padding(0, Theme.Spacing.S1, 0, Theme.Spacing.S1),
+                AccessibleName = label
             };
             btn.FlatAppearance.BorderSize = 0;
 
@@ -609,12 +630,12 @@ public class MainForm : Form
             _pages[key] = (btn, view);
         }
 
-        AddPage("DASBOR", "Dasbor", "📊", vDasbor);
-        AddPage("PENCARIAN", "Pencarian Buku", "🔍", vCari);
-        AddPage("DATABUKU", "Data Buku", "📚", vDataBuku);
-        AddPage("PEMINJAMAN", "Peminjaman", "🔄", vSirkulasi);
-        AddPage("ANGGOTA", "Anggota", "👥", vAnggota);
-        AddPage("LAPORAN", "Laporan", "📑", vLaporan);
+        AddPage("DASBOR", "Dasbor", "\uE80F", vDasbor);
+        AddPage("PENCARIAN", "Pencarian Buku", "\uE721", vCari);
+        AddPage("DATABUKU", "Data Buku", "\uE8F1", vDataBuku);
+        AddPage("PEMINJAMAN", "Peminjaman", "\uE895", vSirkulasi);
+        AddPage("ANGGOTA", "Anggota", "\uE716", vAnggota);
+        AddPage("LAPORAN", "Laporan", "\uE74E", vLaporan);
     }
 
     private void BeralihMenu(string key)
@@ -625,13 +646,15 @@ public class MainForm : Form
         foreach (var p in _pages.Values)
         {
             p.Pnl.Visible = false;
-            p.Btn.BackColor = Color.White;
-            p.Btn.ForeColor = C_TEXT_DARK;
+            if (p.Btn is SidebarButton sidebarButton) sidebarButton.Active = false;
+            p.Btn.BackColor = Theme.Colors.Neutral0;
+            p.Btn.ForeColor = Theme.Colors.Neutral900;
         }
 
         target.Pnl.Visible = true;
-        target.Btn.BackColor = C_BLUE_LIGHT;
-        target.Btn.ForeColor = C_PRIMARY;
+        if (target.Btn is SidebarButton activeSidebarButton) activeSidebarButton.Active = true;
+        target.Btn.BackColor = Theme.Colors.Primary50;
+        target.Btn.ForeColor = Theme.Colors.Primary700;
         _activeSidebarBtn = target.Btn;
 
         RefreshSemuaData();
@@ -737,10 +760,10 @@ public class MainForm : Form
             return c;
         }
 
-        pnlMetrics.Controls.Add(BuatKartuStat("TOTAL KOLEKSI", "📚", C_PRIMARY, out _lblStatTotalBuku), 0, 0);
-        pnlMetrics.Controls.Add(BuatKartuStat("BUKU DIPINJAM", "🔄", Color.FromArgb(37, 99, 235), out _lblStatBukuDipinjam), 1, 0);
-        pnlMetrics.Controls.Add(BuatKartuStat("TERLAMBAT DIKEMBALIKAN", "⚠️", Color.FromArgb(220, 38, 38), out _lblStatBukuTerlambat), 2, 0);
-        pnlMetrics.Controls.Add(BuatKartuStat("DENDA TERKUMPUL", "💰", Color.FromArgb(16, 185, 129), out _lblStatTotalDenda), 3, 0);
+        pnlMetrics.Controls.Add(BuatKartuStat("TOTAL KOLEKSI", "", C_PRIMARY, out _lblStatTotalBuku), 0, 0);
+        pnlMetrics.Controls.Add(BuatKartuStat("DIPINJAM", "", Color.FromArgb(37, 99, 235), out _lblStatBukuDipinjam), 1, 0);
+        pnlMetrics.Controls.Add(BuatKartuStat("TERLAMBAT", "", Color.FromArgb(220, 38, 38), out _lblStatBukuTerlambat), 2, 0);
+        pnlMetrics.Controls.Add(BuatKartuStat("TOTAL DENDA", "", Theme.Colors.Neutral900, out _lblStatTotalDenda), 3, 0);
 
         // Body: 2 Kolom (Kiri: Sirkulasi Terbaru, Kanan: Buku Terpopuler & Akses Cepat)
         var pnlBody = new TableLayoutPanel
@@ -769,7 +792,7 @@ public class MainForm : Form
 
         var lblRecentTitle = new Label
         {
-            Text = "🔄  Sirkulasi Transaksi Terbaru",
+            Text = "Sirkulasi Transaksi Terbaru",
             Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
@@ -782,6 +805,7 @@ public class MainForm : Form
         _gridPinjamTerbaru.Columns.Add("Judul", "Judul Buku");
         _gridPinjamTerbaru.Columns.Add("TglPinjam", "Tgl Pinjam");
         _gridPinjamTerbaru.Columns.Add("Status", "Status");
+        _gridPinjamTerbaru.Columns.Add("Denda", "Denda");
         cardRecent.Controls.Add(_gridPinjamTerbaru);
         _gridPinjamTerbaru.BringToFront();
 
@@ -798,7 +822,7 @@ public class MainForm : Form
 
         var lblPopTitle = new Label
         {
-            Text = "⭐  Koleksi Terpopuler",
+            Text = "Koleksi Terpopuler",
             Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
@@ -843,21 +867,24 @@ public class MainForm : Form
         pnlStrip.Controls.Add(_lblStripDipinjam);
 
         // Toolbar Atas (Filter & Tombol Tambah)
-        var pnlToolbar = new Panel
+        var pnlToolbar = new FlowLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 60,
-            Padding = new Padding(0, 12, 0, 12)
+            Height = 96,
+            Padding = new Padding(0, 12, 0, 12),
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true,
+            AutoScroll = false
         };
         panel.Controls.Add(pnlToolbar);
         pnlToolbar.BringToFront();
 
         _txtSearchBuku = new TextBox
         {
-            Location = new Point(0, 14),
-            Size = new Size(240, 30),
-            Font = new Font("Segoe UI", 9.5f),
-            PlaceholderText = "🔍 Cari judul atau penulis..."
+            Size = new Size(240, Theme.Sizes.Input),
+            Font = Theme.Fonts.Body,
+            PlaceholderText = "Cari judul atau penulis...",
+            Margin = new Padding(0, 0, Theme.Spacing.S2, Theme.Spacing.S2)
         };
         _txtSearchBuku.TextChanged += (s, e) => FilterDataBuku();
         pnlToolbar.Controls.Add(_txtSearchBuku);
@@ -865,9 +892,9 @@ public class MainForm : Form
 
         _cmbKategoriBuku = new ComboBox
         {
-            Location = new Point(250, 14),
-            Size = new Size(140, 30),
-            DropDownStyle = ComboBoxStyle.DropDownList
+            Size = new Size(180, Theme.Sizes.Input),
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Margin = new Padding(0, 0, Theme.Spacing.S2, Theme.Spacing.S2)
         };
         _cmbKategoriBuku.Items.AddRange(new object[] { "Semua Kategori", "Novel", "Pendidikan", "Sains", "Psikologi", "Sejarah", "Teknologi" });
         _cmbKategoriBuku.SelectedIndex = 0;
@@ -877,9 +904,9 @@ public class MainForm : Form
 
         _cmbStatusBuku = new ComboBox
         {
-            Location = new Point(400, 14),
-            Size = new Size(130, 30),
-            DropDownStyle = ComboBoxStyle.DropDownList
+            Size = new Size(160, Theme.Sizes.Input),
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Margin = new Padding(0, 0, Theme.Spacing.S2, Theme.Spacing.S2)
         };
         _cmbStatusBuku.Items.AddRange(new object[] { "Semua Status", "Tersedia", "Dipinjam" });
         _cmbStatusBuku.SelectedIndex = 0;
@@ -890,13 +917,13 @@ public class MainForm : Form
         _btnTambahBukuTop = new Button
         {
             Text = "+ Tambah Buku Baru",
-            Size = new Size(160, 34),
-            Location = new Point(540, 12),
+            Size = new Size(160, Theme.Sizes.Button),
             BackColor = C_PRIMARY,
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-            Cursor = Cursors.Hand
+            Font = Theme.Fonts.Label,
+            Cursor = Cursors.Hand,
+            Margin = new Padding(0, 0, 0, Theme.Spacing.S2)
         };
         _btnTambahBukuTop.FlatAppearance.BorderSize = 0;
         _btnTambahBukuTop.Click += BtnTambahBuku_Click;
@@ -976,6 +1003,16 @@ public class MainForm : Form
         _gridDataBuku.Columns.Add("Tahun", "Tahun");
         _gridDataBuku.Columns.Add("Status", "Status");
         _gridDataBuku.Columns.Add("Rak", "Lokasi Rak");
+        _gridDataBuku.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+        _gridDataBuku.Columns["Kode"]!.Width = 96;
+        _gridDataBuku.Columns["Judul"]!.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        _gridDataBuku.Columns["Judul"]!.MinimumWidth = 220;
+        _gridDataBuku.Columns["Penulis"]!.Width = 200;
+        _gridDataBuku.Columns["Kategori"]!.Width = 120;
+        _gridDataBuku.Columns["Tahun"]!.Width = 80;
+        _gridDataBuku.Columns["Status"]!.Width = 120;
+        _gridDataBuku.Columns["Rak"]!.Width = 170;
+        _gridDataBuku.CellPainting += PaintStatusBadge;
 
         panel.Controls.Add(_gridDataBuku);
         _gridDataBuku.BringToFront();
@@ -1146,37 +1183,42 @@ public class MainForm : Form
         var panel = new Panel { Dock = DockStyle.Fill, BackColor = C_BG_APP };
 
         // Search Header
-        var pnlSearchHeader = new Panel
+        var pnlSearchHeader = new FlowLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 70,
+            Height = 60,
             BackColor = Color.White,
-            Padding = new Padding(16, 14, 16, 14)
+            Padding = new Padding(Theme.Spacing.S2),
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true,
+            AutoScroll = false
         };
         pnlSearchHeader.Paint += (s, e) => e.Graphics.DrawLine(new Pen(C_BORDER), 0, pnlSearchHeader.Height - 1, pnlSearchHeader.Width, pnlSearchHeader.Height - 1);
         panel.Controls.Add(pnlSearchHeader);
 
         _txtCariBesar = new TextBox
         {
-            Location = new Point(16, 16),
-            Size = new Size(450, 34),
-            Font = new Font("Segoe UI", 11f),
-            PlaceholderText = "🔍 Ketik judul buku, pengarang, topik, atau kode..."
+            Size = new Size(450, Theme.Sizes.Input),
+            Font = Theme.Fonts.Body,
+            PlaceholderText = "Cari judul, pengarang, topik, atau kode...",
+            Margin = new Padding(0, 0, Theme.Spacing.S2, Theme.Spacing.S2)
         };
         _txtCariBesar.TextChanged += (s, e) => LakukanPencarian();
         pnlSearchHeader.Controls.Add(_txtCariBesar);
+        ApplyRounded(_txtCariBesar, Theme.Radius.Medium);
 
         _cmbKategoriCari = new ComboBox
         {
-            Location = new Point(480, 16),
-            Size = new Size(160, 34),
-            Font = new Font("Segoe UI", 10f),
-            DropDownStyle = ComboBoxStyle.DropDownList
+            Size = new Size(200, Theme.Sizes.Input),
+            Font = Theme.Fonts.Body,
+            DropDownStyle = ComboBoxStyle.DropDownList,
+            Margin = new Padding(0, 0, Theme.Spacing.S2, Theme.Spacing.S2)
         };
         _cmbKategoriCari.Items.AddRange(new object[] { "Semua Kategori", "Novel", "Pendidikan", "Sains", "Psikologi", "Sejarah", "Teknologi" });
         _cmbKategoriCari.SelectedIndex = 0;
         _cmbKategoriCari.SelectedIndexChanged += (s, e) => LakukanPencarian();
         pnlSearchHeader.Controls.Add(_cmbKategoriCari);
+        ApplyRounded(_cmbKategoriCari, Theme.Radius.Medium);
 
         // Body: Split 2 Kolom (Hasil Tabel & Panel Detail Buku)
         var split = new TableLayoutPanel
@@ -1207,6 +1249,7 @@ public class MainForm : Form
         _gridHasilCari.Columns.Add("Penulis", "Penulis");
         _gridHasilCari.Columns.Add("Kategori", "Kategori");
         _gridHasilCari.Columns.Add("Status", "Status");
+        _gridHasilCari.CellPainting += PaintStatusBadge;
         _gridHasilCari.SelectionChanged += GridHasilCari_SelectionChanged;
         pnlGridCari.Controls.Add(_gridHasilCari);
 
@@ -1224,7 +1267,7 @@ public class MainForm : Form
         int dy = 20;
         var lblDetHead = new Label
         {
-            Text = "📖  INFORMASI DETAIL BUKU",
+            Text = "INFORMASI DETAIL BUKU",
             Font = new Font("Segoe UI", 9f, FontStyle.Bold),
             ForeColor = C_TEXT_MUTED,
             Location = new Point(24, dy),
@@ -1415,6 +1458,23 @@ public class MainForm : Form
         }
     }
 
+    private static void PaintStatusBadge(object? sender, DataGridViewCellPaintingEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex < 0 || sender is not DataGridView grid || grid.Columns[e.ColumnIndex].Name != "Status") return;
+        e.PaintBackground(e.CellBounds, true);
+        string status = e.FormattedValue?.ToString() ?? "";
+        bool danger = status.Contains("Terlambat", StringComparison.OrdinalIgnoreCase);
+        bool warning = status.Contains("Dipinjam", StringComparison.OrdinalIgnoreCase) && !status.Contains("Dikembalikan", StringComparison.OrdinalIgnoreCase);
+        Color fill = danger ? Theme.Colors.DangerFill : warning ? Theme.Colors.WarningFill : Theme.Colors.SuccessFill;
+        Color text = danger ? Theme.Colors.DangerText : warning ? Theme.Colors.WarningText : Theme.Colors.SuccessText;
+        var badge = new Rectangle(e.CellBounds.Left + Theme.Spacing.S2, e.CellBounds.Top + Theme.Spacing.S2, Math.Min(e.CellBounds.Width - Theme.Spacing.S4, 92), e.CellBounds.Height - Theme.Spacing.S4);
+        using var brush = new SolidBrush(fill);
+        using var path = RoundedPanel.CreatePath(badge, Theme.Radius.Small);
+        e.Graphics!.FillPath(brush, path);
+        TextRenderer.DrawText(e.Graphics, status, Theme.Fonts.Caption, badge, text, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+        e.Handled = true;
+    }
+
     // =========================================================================
     // 7. VIEW: PEMINJAMAN & SIRKULASI
     // =========================================================================
@@ -1423,36 +1483,39 @@ public class MainForm : Form
         var panel = new Panel { Dock = DockStyle.Fill, BackColor = C_BG_APP };
 
         // Filter Bar
-        var pnlFilter = new Panel
+        var pnlFilter = new FlowLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 56,
+            Height = 96,
             BackColor = Color.White,
-            Padding = new Padding(16, 10, 16, 10)
+            Padding = new Padding(Theme.Spacing.S2),
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = true,
+            AutoScroll = false
         };
         pnlFilter.Paint += (s, e) => e.Graphics.DrawLine(new Pen(C_BORDER), 0, pnlFilter.Height - 1, pnlFilter.Width, pnlFilter.Height - 1);
         panel.Controls.Add(pnlFilter);
 
         var pnlButtonsFilter = new FlowLayoutPanel
         {
-            Dock = DockStyle.Left,
-            Width = 520,
-            FlowDirection = FlowDirection.LeftToRight
+            AutoSize = true,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Margin = new Padding(0)
         };
         pnlFilter.Controls.Add(pnlButtonsFilter);
 
         void AddFilterBtn(string code, string text)
         {
-            var btn = new Button
-            {
-                Text = text,
-                Size = new Size(115, 34),
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
-                BackColor = (_filterSirkulasi == code) ? C_PRIMARY : Color.White,
-                ForeColor = (_filterSirkulasi == code) ? Color.White : C_TEXT_DARK,
-                Cursor = Cursors.Hand
-            };
+        var btn = new RoundedButton
+        {
+            Text = text,
+            Size = new Size(115, Theme.Sizes.Button),
+            Variant = (_filterSirkulasi == code) ? ButtonVariant.Primary : ButtonVariant.Secondary,
+            ForeColor = (_filterSirkulasi == code) ? Color.White : Theme.Colors.Neutral900,
+            Margin = new Padding(0, 0, Theme.Spacing.S2, 0),
+            Cursor = Cursors.Hand
+        };
             btn.FlatAppearance.BorderColor = C_BORDER;
             btn.Click += (s, e) =>
             {
@@ -1546,6 +1609,17 @@ public class MainForm : Form
         _gridSirkulasi.Columns.Add("JatuhTempo", "Jatuh Tempo (H+7)");
         _gridSirkulasi.Columns.Add("TglKembali", "Tgl Kembali");
         _gridSirkulasi.Columns.Add("Status", "Status Sirkulasi");
+        _gridSirkulasi.CellPainting += PaintStatusBadge;
+        _gridSirkulasi.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+        _gridSirkulasi.Columns["ID"]!.Width = 80;
+        _gridSirkulasi.Columns["Kode"]!.Width = 96;
+        _gridSirkulasi.Columns["Judul"]!.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        _gridSirkulasi.Columns["Judul"]!.MinimumWidth = 180;
+        _gridSirkulasi.Columns["Peminjam"]!.Width = 160;
+        _gridSirkulasi.Columns["TglPinjam"]!.Width = 100;
+        _gridSirkulasi.Columns["JatuhTempo"]!.Width = 120;
+        _gridSirkulasi.Columns["TglKembali"]!.Width = 100;
+        _gridSirkulasi.Columns["Status"]!.Width = 150;
 
         panel.Controls.Add(_gridSirkulasi);
         _gridSirkulasi.BringToFront();
@@ -1585,6 +1659,9 @@ public class MainForm : Form
             if (_filterSirkulasi == "TERLAMBAT" && !isTerlambat) continue;
             if (_filterSirkulasi == "KEMBALI" && isDipinjam) continue;
 
+            string statusDisplay = isTerlambat
+                ? "Terlambat"
+                : t.StatusPeminjaman.Split(" (Denda:")[0];
             int rowIdx = _gridSirkulasi.Rows.Add(
                 t.IdTransaksi,
                 t.KodeBuku,
@@ -1593,25 +1670,9 @@ public class MainForm : Form
                 t.TanggalPinjam,
                 jatuhTempoStr,
                 t.TanggalKembali,
-                isTerlambat ? $"{t.StatusPeminjaman} (Terlambat!)" : t.StatusPeminjaman
+                statusDisplay
             );
 
-            var row = _gridSirkulasi.Rows[rowIdx];
-            if (isTerlambat)
-            {
-                row.Cells["Status"].Style.ForeColor = Color.FromArgb(185, 28, 28);
-                row.Cells["Status"].Style.BackColor = C_RED_BG;
-            }
-            else if (isDipinjam)
-            {
-                row.Cells["Status"].Style.ForeColor = Color.FromArgb(30, 64, 175);
-                row.Cells["Status"].Style.BackColor = C_BLUE_LIGHT;
-            }
-            else
-            {
-                row.Cells["Status"].Style.ForeColor = C_GREEN_FG;
-                row.Cells["Status"].Style.BackColor = C_GREEN_BG;
-            }
         }
     }
 
@@ -1624,7 +1685,7 @@ public class MainForm : Form
 
         var lblHead = new Label
         {
-            Text = "👥  Direktori Anggota & Status Kuota Peminjaman (Maks 3 Buku)",
+            Text = "Direktori Anggota & Status Kuota Peminjaman (Maks 3 Buku)",
             Font = new Font("Segoe UI", 12f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
@@ -1639,6 +1700,7 @@ public class MainForm : Form
         grid.Columns.Add("PinjamAktif", "Pinjaman Aktif");
         grid.Columns.Add("SisaKuota", "Sisa Kuota");
         grid.Columns.Add("Status", "Status Anggota");
+        grid.CellPainting += PaintStatusBadge;
 
         // Seed data anggota SMA Pelita Bangsa
         string[][] siswaData = {
@@ -1729,7 +1791,7 @@ public class MainForm : Form
 
         var lblTblTitle = new Label
         {
-            Text = "📑  Catatan Sirkulasi Pengembalian dengan Denda Keterlambatan",
+            Text = "Catatan Sirkulasi Pengembalian dengan Denda Keterlambatan",
             Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
@@ -1776,29 +1838,43 @@ public class MainForm : Form
         _gridPinjamTerbaru.Rows.Clear();
         foreach (var t in _service.DaftarTransaksi.TakeLast(6).Reverse())
         {
-            _gridPinjamTerbaru.Rows.Add(t.NamaPeminjam, t.JudulBuku, t.TanggalPinjam, t.StatusPeminjaman);
+            string dendaText = "—";
+            int dendaStart = t.StatusPeminjaman.IndexOf("Denda: Rp ", StringComparison.OrdinalIgnoreCase);
+            if (dendaStart >= 0)
+            {
+                int valueStart = dendaStart + "Denda: ".Length;
+                int end = t.StatusPeminjaman.IndexOf(')', valueStart);
+                dendaText = end > valueStart ? t.StatusPeminjaman[valueStart..end] : t.StatusPeminjaman[valueStart..];
+            }
+            _gridPinjamTerbaru.Rows.Add(t.NamaPeminjam, t.JudulBuku, t.TanggalPinjam, t.StatusPeminjaman.Split(" (Denda:")[0], dendaText);
         }
 
-        // 3. Refresh Buku Populer
         _pnlBukuPopulerList.Controls.Clear();
-        var popList = new[]
-        {
-            ("01", "Laskar Pelangi", "Andrea Hirata", "48 kali dipinjam"),
-            ("02", "Bumi Manusia", "Pramoedya Ananta Toer", "42 kali dipinjam"),
-            ("03", "Negeri 5 Menara", "Ahmad Fuadi", "36 kali dipinjam"),
-            ("04", "Filosofi Teras", "Henry Manampiring", "29 kali dipinjam")
-        };
+        var popList = _service.DaftarTransaksi
+            .GroupBy(t => new { t.KodeBuku, t.JudulBuku })
+            .OrderByDescending(g => g.Count())
+            .Take(5)
+            .Select((g, i) => ($"{i + 1:00}", g.Key.JudulBuku, _service.DaftarBuku.FirstOrDefault(b => b.KodeBuku == g.Key.KodeBuku)?.Penulis ?? "Penulis tidak tersedia", $"{g.Count()}× dipinjam"))
+            .ToArray();
 
-        int py = 6;
+        if (popList.Length == 0)
+        {
+            _pnlBukuPopulerList.Controls.Add(new EmptyState("Belum ada data peminjaman", "Koleksi terpopuler akan tampil setelah transaksi dibuat.") { Dock = DockStyle.Fill });
+        }
+
+        int py = Theme.Spacing.S2;
         foreach (var item in popList)
         {
             var p = new Panel
             {
-                Location = new Point(0, py),
-                Size = new Size(_pnlBukuPopulerList.Width - 10, 64),
-                BackColor = Color.FromArgb(248, 250, 252)
+                Dock = DockStyle.Top,
+                Height = 72,
+                MinimumSize = new Size(Theme.Spacing.S7, 72),
+                BackColor = Theme.Colors.Neutral50,
+                Margin = new Padding(0, 0, 0, Theme.Spacing.S2),
+                Padding = new Padding(Theme.Spacing.S3)
             };
-            p.Paint += (s, e) => e.Graphics.DrawRectangle(new Pen(C_BORDER), 0, 0, p.Width - 1, p.Height - 1);
+            p.Paint += (s, e) => e.Graphics.DrawRectangle(new Pen(Theme.Colors.Neutral200), 0, 0, p.Width - 1, p.Height - 1);
 
             var lRank = new Label
             {
@@ -1814,6 +1890,8 @@ public class MainForm : Form
                 Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
                 ForeColor = C_TEXT_DARK,
                 Location = new Point(48, 12),
+                MaximumSize = new Size(Math.Max(120, _pnlBukuPopulerList.Width - 76), 24),
+                AutoEllipsis = true,
                 AutoSize = true
             };
             var lP = new Label
@@ -1821,7 +1899,9 @@ public class MainForm : Form
                 Text = $"{item.Item3} • {item.Item4}",
                 Font = new Font("Segoe UI", 8f),
                 ForeColor = C_TEXT_MUTED,
-                Location = new Point(48, 34),
+                Location = new Point(48, 38),
+                MaximumSize = new Size(Math.Max(120, _pnlBukuPopulerList.Width - 76), 24),
+                AutoEllipsis = true,
                 AutoSize = true
             };
 
@@ -1829,7 +1909,7 @@ public class MainForm : Form
             p.Controls.Add(lJ);
             p.Controls.Add(lP);
             _pnlBukuPopulerList.Controls.Add(p);
-            py += 72;
+            py += 80;
         }
 
         // 4. Filter Data Buku & Sirkulasi
@@ -1893,9 +1973,14 @@ public class MainForm : Form
             SelectionBackColor = C_PRIMARY,
             SelectionForeColor = Color.White
         };
-        grid.ColumnHeadersHeight = 38;
+        grid.ColumnHeadersHeight = 48;
         grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        grid.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.FromArgb(248, 250, 252) };
+        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        grid.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
+        {
+            BackColor = Color.FromArgb(248, 250, 252),
+            WrapMode = DataGridViewTriState.True
+        };
         grid.EnableHeadersVisualStyles = false;
 
         grid.DefaultCellStyle = new DataGridViewCellStyle
@@ -1905,8 +1990,10 @@ public class MainForm : Form
             Font = new Font("Segoe UI", 9f),
             SelectionBackColor = Color.FromArgb(239, 246, 255),
             SelectionForeColor = Color.FromArgb(29, 59, 139),
-            Padding = new Padding(8, 0, 8, 0)
+            Padding = new Padding(8, 4, 8, 4),
+            WrapMode = DataGridViewTriState.True
         };
+        grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
 
         return grid;
     }
