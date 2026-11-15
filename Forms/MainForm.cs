@@ -1,5 +1,6 @@
 using System.Data;
 using System.Globalization;
+using System.Drawing.Drawing2D;
 using PerpustakaanPelitaBangsa.Models;
 using PerpustakaanPelitaBangsa.Services;
 
@@ -211,39 +212,39 @@ public class MainForm : Form
         {
             Dock = DockStyle.Fill,
             BackColor = Color.White,
-            Padding = new Padding(60, 60, 60, 40)
+            Padding = new Padding(72, 48, 72, 40)
         };
         split.Controls.Add(formContainer, 1, 0);
 
-        int y = 50;
+        int y = 42;
         var lblFormTitle = new Label
         {
             Text = "Masuk ke Akun Anda",
             Font = new Font("Segoe UI", 20f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
-            Location = new Point(60, y),
+            Location = new Point(72, y),
             AutoSize = true
         };
         formContainer.Controls.Add(lblFormTitle);
         y += 38;
-
         var lblFormSub = new Label
         {
             Text = "Pilih peran pengguna dan masukkan kredensial untuk melanjutkan.",
-            Font = new Font("Segoe UI", 10f, FontStyle.Regular),
+            Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = C_TEXT_MUTED,
-            Location = new Point(60, y),
+            Location = new Point(72, y),
             AutoSize = true
         };
         formContainer.Controls.Add(lblFormSub);
+
         y += 44;
 
         // Toggle Peran
         var btnRolePustakawan = new Button
         {
             Text = "👑  Pustakawan",
-            Location = new Point(60, y),
-            Size = new Size(180, 40),
+            Location = new Point(72, y),
+            Size = new Size(188, 40),
             FlatStyle = FlatStyle.Flat,
             Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
             BackColor = C_PRIMARY,
@@ -254,8 +255,8 @@ public class MainForm : Form
         var btnRoleSiswa = new Button
         {
             Text = "🎓  Siswa",
-            Location = new Point(250, y),
-            Size = new Size(180, 40),
+            Location = new Point(268, y),
+            Size = new Size(188, 40),
             FlatStyle = FlatStyle.Flat,
             Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
             BackColor = Color.FromArgb(241, 245, 249),
@@ -293,27 +294,29 @@ public class MainForm : Form
             Text = "Nama Pengguna (Username)",
             Font = new Font("Segoe UI", 9f, FontStyle.Bold),
             ForeColor = Color.FromArgb(71, 85, 105),
-            Location = new Point(60, y),
+            Location = new Point(72, y),
             AutoSize = true
         };
         formContainer.Controls.Add(lblU);
         y += 24;
         var txtUsername = new TextBox
         {
-            Location = new Point(60, y),
-            Size = new Size(370, 32),
-            Font = new Font("Segoe UI", 11f)
+            Location = new Point(72, y),
+            Size = new Size(384, 34),
+            Font = new Font("Segoe UI", 11f),
+            BorderStyle = BorderStyle.None,
+            BackColor = Color.FromArgb(248, 250, 252),
+            Padding = new Padding(10, 7, 10, 7)
         };
         formContainer.Controls.Add(txtUsername);
         y += 46;
-
         // Input Password
         var lblP = new Label
         {
             Text = "Kata Sandi (Password)",
             Font = new Font("Segoe UI", 9f, FontStyle.Bold),
             ForeColor = Color.FromArgb(71, 85, 105),
-            Location = new Point(60, y),
+            Location = new Point(72, y),
             AutoSize = true
         };
         formContainer.Controls.Add(lblP);
@@ -321,9 +324,12 @@ public class MainForm : Form
 
         var txtPassword = new TextBox
         {
-            Location = new Point(60, y),
-            Size = new Size(370, 32),
+            Location = new Point(72, y),
+            Size = new Size(384, 34),
             Font = new Font("Segoe UI", 11f),
+            BorderStyle = BorderStyle.None,
+            BackColor = Color.FromArgb(248, 250, 252),
+            Padding = new Padding(10, 7, 10, 7),
             UseSystemPasswordChar = true
         };
         formContainer.Controls.Add(txtPassword);
@@ -333,22 +339,27 @@ public class MainForm : Form
         var btnLogin = new Button
         {
             Text = "Masuk ke Sistem  ➔",
-            Location = new Point(60, y),
-            Size = new Size(370, 46),
+            Location = new Point(72, y),
+            Size = new Size(384, 46),
             BackColor = C_PRIMARY,
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
             Font = new Font("Segoe UI", 10.5f, FontStyle.Bold)
         };
         btnLogin.FlatAppearance.BorderSize = 0;
+        ApplyRounded(btnRolePustakawan, 10);
+        ApplyRounded(btnRoleSiswa, 10);
+        ApplyRounded(txtUsername, 10);
+        ApplyRounded(txtPassword, 10);
+        ApplyRounded(btnLogin, 10);
         formContainer.Controls.Add(btnLogin);
         y += 56;
 
         var lblInfoAkun = new Label
         {
             Text = "Akun dikelola melalui database oleh admin sistem.",
-            Location = new Point(60, y),
-            Size = new Size(370, 42),
+            Location = new Point(72, y),
+            Size = new Size(384, 42),
             ForeColor = C_TEXT_MUTED,
             Font = new Font("Segoe UI", 8.5f)
         };
@@ -850,6 +861,7 @@ public class MainForm : Form
         };
         _txtSearchBuku.TextChanged += (s, e) => FilterDataBuku();
         pnlToolbar.Controls.Add(_txtSearchBuku);
+        ApplyRounded(_txtSearchBuku, 8);
 
         _cmbKategoriBuku = new ComboBox
         {
@@ -861,6 +873,7 @@ public class MainForm : Form
         _cmbKategoriBuku.SelectedIndex = 0;
         _cmbKategoriBuku.SelectedIndexChanged += (s, e) => FilterDataBuku();
         pnlToolbar.Controls.Add(_cmbKategoriBuku);
+        ApplyRounded(_cmbKategoriBuku, 8);
 
         _cmbStatusBuku = new ComboBox
         {
@@ -872,6 +885,7 @@ public class MainForm : Form
         _cmbStatusBuku.SelectedIndex = 0;
         _cmbStatusBuku.SelectedIndexChanged += (s, e) => FilterDataBuku();
         pnlToolbar.Controls.Add(_cmbStatusBuku);
+        ApplyRounded(_cmbStatusBuku, 8);
 
         _btnTambahBukuTop = new Button
         {
@@ -1831,6 +1845,24 @@ public class MainForm : Form
         }
     }
 
+    private static void ApplyRounded(Control control, int radius)
+    {
+        void UpdateRegion(object? sender, EventArgs e)
+        {
+            using var path = new GraphicsPath();
+            var bounds = control.ClientRectangle;
+            if (bounds.Width <= 0 || bounds.Height <= 0) return;
+            path.AddArc(0, 0, radius, radius, 180, 90);
+            path.AddArc(bounds.Width - radius, 0, radius, radius, 270, 90);
+            path.AddArc(bounds.Width - radius, bounds.Height - radius, radius, radius, 0, 90);
+            path.AddArc(0, bounds.Height - radius, radius, radius, 90, 90);
+            path.CloseFigure();
+            control.Region = new Region(path);
+        }
+        control.Resize += UpdateRegion;
+        UpdateRegion(control, EventArgs.Empty);
+    }
+
     // Helper Pembuat DataGridView Standar dengan Style Flat Modern
     private static DataGridView BuatGridStandar()
     {
@@ -1853,12 +1885,17 @@ public class MainForm : Form
 
         grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = Color.FromArgb(248, 250, 252),
-            ForeColor = Color.FromArgb(71, 85, 105),
-            Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+            BackColor = C_PRIMARY,
+            ForeColor = Color.White,
+            Font = new Font("Segoe UI", 9f, FontStyle.Bold),
             Alignment = DataGridViewContentAlignment.MiddleLeft,
-            Padding = new Padding(8, 6, 8, 6)
+            Padding = new Padding(10, 0, 10, 0),
+            SelectionBackColor = C_PRIMARY,
+            SelectionForeColor = Color.White
         };
+        grid.ColumnHeadersHeight = 38;
+        grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+        grid.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.FromArgb(248, 250, 252) };
         grid.EnableHeadersVisualStyles = false;
 
         grid.DefaultCellStyle = new DataGridViewCellStyle
