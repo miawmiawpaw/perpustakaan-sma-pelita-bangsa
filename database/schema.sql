@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS buku (
     lokasi_rak VARCHAR(100) NOT NULL,
     tersedia TINYINT(1) NOT NULL DEFAULT 1,
     kategori VARCHAR(50) DEFAULT 'Umum',
-    tahun VARCHAR(10) DEFAULT ''
+    tahun VARCHAR(10) DEFAULT '',
+    foto_path VARCHAR(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS transaksi (

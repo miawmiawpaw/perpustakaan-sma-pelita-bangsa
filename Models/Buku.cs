@@ -12,6 +12,7 @@ public class Buku
     private bool _tersedia;
     private string _kategori = string.Empty;
     private string _tahun = string.Empty;
+    private string _fotoPath = string.Empty;
 
     public string KodeBuku
     {
@@ -54,13 +55,18 @@ public class Buku
         get => string.IsNullOrEmpty(_tahun) ? InferTahun(_kodeBuku) : _tahun;
         set => _tahun = value?.Trim() ?? string.Empty;
     }
+    public string FotoPath
+    {
+        get => _fotoPath;
+        set => _fotoPath = value?.Trim() ?? string.Empty;
+    }
 
     public Buku(string kodeBuku, string judul, string penulis, string lokasiRak, bool tersedia)
-        : this(kodeBuku, judul, penulis, lokasiRak, tersedia, InferKategori(judul), InferTahun(kodeBuku))
+        : this(kodeBuku, judul, penulis, lokasiRak, tersedia, InferKategori(judul), InferTahun(kodeBuku), "")
     {
     }
 
-    public Buku(string kodeBuku, string judul, string penulis, string lokasiRak, bool tersedia, string? kategori, string? tahun)
+    public Buku(string kodeBuku, string judul, string penulis, string lokasiRak, bool tersedia, string? kategori, string? tahun, string? fotoPath = null)
     {
         KodeBuku = kodeBuku;
         Judul = judul;
@@ -69,6 +75,7 @@ public class Buku
         Tersedia = tersedia;
         Kategori = string.IsNullOrWhiteSpace(kategori) ? InferKategori(judul) : kategori;
         Tahun = string.IsNullOrWhiteSpace(tahun) ? InferTahun(kodeBuku) : tahun;
+        FotoPath = fotoPath ?? string.Empty;
     }
 
     public static string InferKategori(string judul)
@@ -106,7 +113,7 @@ public class Buku
     public string ToFileFormat()
     {
         string statusStr = Tersedia ? "Tersedia" : "Dipinjam";
-        return $"{KodeBuku}|{Judul}|{Penulis}|{LokasiRak}|{statusStr}|{Kategori}|{Tahun}";
+        return string.Join("|", KodeBuku, Judul, Penulis, LokasiRak, statusStr, Kategori, Tahun, FotoPath);
     }
 
     public static Buku? FromFileFormat(string line)
@@ -114,11 +121,10 @@ public class Buku
         if (string.IsNullOrWhiteSpace(line)) return null;
         string[] parts = line.Split('|');
         if (parts.Length < 5) return null;
-
         bool tersedia = parts[4].Trim().Equals("Tersedia", StringComparison.OrdinalIgnoreCase);
         string kat = parts.Length >= 6 ? parts[5].Trim() : InferKategori(parts[1].Trim());
         string thn = parts.Length >= 7 ? parts[6].Trim() : InferTahun(parts[0].Trim());
-
-        return new Buku(parts[0].Trim(), parts[1].Trim(), parts[2].Trim(), parts[3].Trim(), tersedia, kat, thn);
+        string foto = parts.Length >= 8 ? parts[7].Trim() : string.Empty;
+        return new Buku(parts[0].Trim(), parts[1].Trim(), parts[2].Trim(), parts[3].Trim(), tersedia, kat, thn, foto);
     }
 }

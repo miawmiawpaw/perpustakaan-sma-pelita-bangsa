@@ -178,17 +178,16 @@ public class PerpustakaanService
         return (true, $"Buku '{baru.Judul}' berhasil ditambahkan.");
     }
 
-    public (bool Sukses, string Pesan) UbahBuku(string kodeBuku, string judul, string penulis, string rak, string kategori, string tahun)
+    public (bool Sukses, string Pesan) UbahBuku(string kodeBuku, string judul, string penulis, string rak, string kategori, string tahun, string fotoPath = "")
     {
         var buku = DaftarBuku.FirstOrDefault(b => b.KodeBuku.Equals(kodeBuku, StringComparison.OrdinalIgnoreCase));
         if (buku == null) return (false, "Buku tidak ditemukan.");
-
         buku.Judul = judul;
         buku.Penulis = penulis;
         buku.LokasiRak = rak;
         buku.Kategori = kategori;
         buku.Tahun = tahun;
-
+        buku.FotoPath = fotoPath;
         SimpanSemua();
         return (true, "Data buku berhasil diperbarui.");
     }

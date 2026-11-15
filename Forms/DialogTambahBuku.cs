@@ -13,6 +13,10 @@ public class DialogTambahBuku : Form
     private readonly TextBox _txtLokasi = new();
     private readonly ComboBox _cmbKategori = new();
     private readonly TextBox _txtTahun = new();
+    private readonly Button _btnFoto = new();
+    private readonly Button _btnHapusFoto = new();
+    private readonly PictureBox _previewFoto = new();
+    private string _fotoPath = string.Empty;
     private readonly Button _btnSimpan = new();
     private readonly Button _btnBatal = new();
     private readonly ErrorProvider _errors = new();
@@ -95,6 +99,25 @@ public class DialogTambahBuku : Form
         AddField("Lokasi Rak (Contoh: Rak B-12, Lantai 1)", _txtLokasi);
         AddField("Kategori", _cmbKategori);
         AddField("Tahun Terbit", _txtTahun);
+        var lblFoto = new Label { Text = "Foto Sampul (Opsional)", Font = Theme.Fonts.Label, ForeColor = Theme.Colors.Neutral600, Location = new Point(24, y), AutoSize = true };
+        panel.Controls.Add(lblFoto);
+        y += Theme.Spacing.S4;
+        _previewFoto.Location = new Point(24, y);
+        _previewFoto.Size = new Size(80, 100);
+        _previewFoto.SizeMode = PictureBoxSizeMode.Zoom;
+        _previewFoto.BackColor = Theme.Colors.Neutral100;
+        panel.Controls.Add(_previewFoto);
+        _btnFoto.Text = "Pilih Foto";
+        _btnFoto.Location = new Point(116, y);
+        _btnFoto.Size = new Size(110, Theme.Sizes.Button);
+        _btnFoto.Click += (_, _) => PilihFoto();
+        panel.Controls.Add(_btnFoto);
+        _btnHapusFoto.Text = "Hapus Foto";
+        _btnHapusFoto.Location = new Point(234, y);
+        _btnHapusFoto.Size = new Size(110, Theme.Sizes.Button);
+        _btnHapusFoto.Click += (_, _) => { _fotoPath = string.Empty; _previewFoto.Image = null; };
+        panel.Controls.Add(_btnHapusFoto);
+        y += 116;
 
         if (existing != null)
         {
@@ -105,6 +128,8 @@ public class DialogTambahBuku : Form
             _txtTahun.Text = existing.Tahun;
             int idx = _cmbKategori.Items.IndexOf(existing.Kategori);
             _cmbKategori.SelectedIndex = idx >= 0 ? idx : 0;
+            _fotoPath = existing.FotoPath;
+            MuatPreviewFoto();
         }
 
         y += 10;
@@ -136,6 +161,34 @@ public class DialogTambahBuku : Form
             _btnSimpan.Left = Math.Max(24, panel.ClientSize.Width - 220);
             _btnBatal.Left = Math.Max(24, panel.ClientSize.Width - 80);
         };
+    }
+
+    private void PilihFoto()
+    {
+        using var dlg = new OpenFileDialog { Filter = "Gambar|*.jpg;*.jpeg;*.png;*.bmp", Title = "Pilih Foto Sampul" };
+        if (dlg.ShowDialog(this) != DialogResult.OK) return;
+        try
+        {
+            using var image = Image.FromFile(dlg.FileName);
+            string folder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "book-covers");
+            Directory.CreateDirectory(folder);
+            string target = Path.Combine(folder, $"{Guid.NewGuid():N}{Path.GetExtension(dlg.FileName).ToLowerInvariant()}");
+            File.Copy(dlg.FileName, target, true);
+            _fotoPath = Path.Combine("book-covers", Path.GetFileName(target));
+            _previewFoto.Image = new Bitmap(image);
+        }
+        catch
+        {
+            MessageBox.Show(this, "File foto tidak dapat dibaca.", "Foto Buku", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private void MuatPreviewFoto()
+    {
+        string path = Path.IsPathRooted(_fotoPath) ? _fotoPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _fotoPath);
+        if (!File.Exists(path)) return;
+        using var image = Image.FromFile(path);
+        _previewFoto.Image = new Bitmap(image);
     }
 
     private void BtnSimpan_Click(object? sender, EventArgs e)
@@ -173,7 +226,7 @@ public class DialogTambahBuku : Form
         }
 
         if (string.IsNullOrWhiteSpace(tahun)) tahun = DateTime.Now.Year.ToString();
-        HasilBuku = new Buku(kode, judul, penulis, lokasi, true, kategori, tahun);
+        HasilBuku = new Buku(kode, judul, penulis, lokasi, true, kategori, tahun, _fotoPath);
         DialogResult = DialogResult.OK;
         Close();
     }

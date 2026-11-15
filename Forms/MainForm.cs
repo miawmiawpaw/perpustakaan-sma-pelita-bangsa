@@ -73,6 +73,7 @@ public class MainForm : Form
     private DataGridView _gridHasilCari = null!;
     private Panel _pnlDetailBuku = null!;
     private Label _lblDetailJudul = null!;
+    private PictureBox _picDetailBuku = null!;
     private Label _lblDetailPenulis = null!;
     private Label _lblDetailKode = null!;
     private Label _lblDetailKategori = null!;
@@ -1096,7 +1097,7 @@ public class MainForm : Form
         if (dlg.ShowDialog(this) == DialogResult.OK && dlg.HasilBuku != null)
         {
             var h = dlg.HasilBuku;
-            var res = _service.UbahBuku(buku.KodeBuku, h.Judul, h.Penulis, h.LokasiRak, h.Kategori, h.Tahun);
+            var res = _service.UbahBuku(buku.KodeBuku, h.Judul, h.Penulis, h.LokasiRak, h.Kategori, h.Tahun, h.FotoPath);
             MessageBox.Show(res.Pesan, "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
             RefreshSemuaData();
         }
@@ -1281,11 +1282,13 @@ public class MainForm : Form
             Text = "Pilih buku dari daftar",
             Font = new Font("Segoe UI", 14f, FontStyle.Bold),
             ForeColor = C_TEXT_DARK,
-            Location = new Point(24, dy),
-            Size = new Size(340, 56)
+            Location = new Point(124, dy),
+            Size = new Size(240, 56)
         };
         _pnlDetailBuku.Controls.Add(_lblDetailJudul);
-        dy += 60;
+        _picDetailBuku = new PictureBox { Location = new Point(24, dy), Size = new Size(88, 118), SizeMode = PictureBoxSizeMode.Zoom, BackColor = Theme.Colors.Neutral100 };
+        _pnlDetailBuku.Controls.Add(_picDetailBuku);
+        dy += 130;
 
         _lblDetailPenulis = new Label
         {
@@ -1433,6 +1436,13 @@ public class MainForm : Form
 
         _selectedBukuDetail = buku;
         _lblDetailJudul.Text = buku.Judul;
+        _picDetailBuku.Image = null;
+        string foto = Path.IsPathRooted(buku.FotoPath) ? buku.FotoPath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, buku.FotoPath);
+        if (!string.IsNullOrWhiteSpace(buku.FotoPath) && File.Exists(foto))
+        {
+            using var image = Image.FromFile(foto);
+            _picDetailBuku.Image = new Bitmap(image);
+        }
         _lblDetailPenulis.Text = $"Karya: {buku.Penulis} ({buku.Tahun})";
         _lblDetailKode.Text = buku.KodeBuku;
         _lblDetailKategori.Text = buku.Kategori;

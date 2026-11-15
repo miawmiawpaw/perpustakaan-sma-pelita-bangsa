@@ -23,6 +23,8 @@ public static class DatabaseHelper
             role ENUM('admin','siswa') NOT NULL
         );", conn);
         cmd.ExecuteNonQuery();
+        using var coverColumn = new MySqlCommand("ALTER TABLE buku ADD COLUMN IF NOT EXISTS foto_path VARCHAR(255) DEFAULT NULL;", conn);
+        coverColumn.ExecuteNonQuery();
 
         using var count = new MySqlCommand("SELECT COUNT(*) FROM pengguna;", conn);
         if (Convert.ToInt32(count.ExecuteScalar()) == 0)
@@ -90,19 +92,11 @@ public static class DatabaseHelper
         var list = new List<Buku>();
         using var conn = new MySqlConnection(ConnectionString);
         conn.Open();
-        using var cmd = new MySqlCommand("SELECT kode_buku, judul, penulis, lokasi_rak, tersedia, kategori, tahun FROM buku;", conn);
+        using var cmd = new MySqlCommand("SELECT kode_buku, judul, penulis, lokasi_rak, tersedia, kategori, tahun, foto_path FROM buku;", conn);
         using var r = cmd.ExecuteReader();
         while (r.Read())
         {
-            list.Add(new Buku(
-                r.GetString(0),
-                r.GetString(1),
-                r.GetString(2),
-                r.GetString(3),
-                r.GetInt32(4) == 1,
-                r.IsDBNull(5) ? "" : r.GetString(5),
-                r.IsDBNull(6) ? "" : r.GetString(6)
-            ));
+            list.Add(new Buku(r.GetString(0), r.GetString(1), r.GetString(2), r.GetString(3), r.GetInt32(4) == 1, r.IsDBNull(5) ? "" : r.GetString(5), r.IsDBNull(6) ? "" : r.GetString(6), r.IsDBNull(7) ? "" : r.GetString(7)));
         }
         return list;
     }
@@ -133,8 +127,8 @@ public static class DatabaseHelper
     {
         using var conn = new MySqlConnection(ConnectionString);
         conn.Open();
-        const string sql = @"REPLACE INTO buku (kode_buku, judul, penulis, lokasi_rak, tersedia, kategori, tahun)
-                             VALUES (@k, @j, @p, @r, @t, @c, @y);";
+        const string sql = @"REPLACE INTO buku (kode_buku, judul, penulis, lokasi_rak, tersedia, kategori, tahun, foto_path)
+                             VALUES (@k, @j, @p, @r, @t, @c, @y, @f);";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@k", b.KodeBuku);
         cmd.Parameters.AddWithValue("@j", b.Judul);
@@ -143,6 +137,7 @@ public static class DatabaseHelper
         cmd.Parameters.AddWithValue("@t", b.Tersedia ? 1 : 0);
         cmd.Parameters.AddWithValue("@c", b.Kategori);
         cmd.Parameters.AddWithValue("@y", b.Tahun);
+        cmd.Parameters.AddWithValue("@f", string.IsNullOrWhiteSpace(b.FotoPath) ? DBNull.Value : b.FotoPath);
         cmd.ExecuteNonQuery();
     }
 
