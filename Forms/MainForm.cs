@@ -195,7 +195,7 @@ public class MainForm : Form
         hero.Controls.Add(lblHeroDesc);
 
         // Box Hint Akun Pengujian
-        // Demo accounts seed into the MySQL pengguna table on first run.
+        // Demo accounts seed into the SQL Server pengguna table on first run.
         var boxHint = new Panel
         {
             Location = new Point(48, 360),
@@ -217,7 +217,7 @@ public class MainForm : Form
 
         var lblHintDesc = new Label
         {
-            Text = "Akun demo dibuat otomatis saat tabel pengguna masih kosong.\nAdmin dan Siswa login memakai kredensial MySQL.",
+            Text = "Akun demo dibuat otomatis saat tabel pengguna masih kosong.\nAdmin dan Siswa login memakai kredensial SQL Server.",
             Font = new Font("Segoe UI", 9.5f, FontStyle.Regular),
             ForeColor = Color.White,
             Dock = DockStyle.Fill
@@ -675,7 +675,7 @@ public class MainForm : Form
             _lblUserName.Text = "Rina Anggraini";
             _lblUserRole.Text = "Pustakawan Pelita Bangsa";
             _lblGreetingTitle.Text = "Selamat pagi, Bu Rina 👋";
-            string statusDb = _service.DatabaseAktif ? "🟢 MySQL XAMPP Aktif" : "📁 Penyimpanan Flat-File (.txt)";
+            string statusDb = _service.DatabaseAktif ? "🟢 SQL Server Aktif" : "📁 Penyimpanan Flat-File (.txt)";
             _lblGreetingSub.Text = $"Kelola koleksi & sirkulasi hari ini. [Penyimpanan: {statusDb}]";
         }
         else
@@ -686,7 +686,7 @@ public class MainForm : Form
             _lblUserName.Text = uname.ToUpper();
             _lblUserRole.Text = "Siswa Pelita Bangsa";
             _lblGreetingTitle.Text = $"Selamat datang, {uname} 👋";
-            string statusDbSiswa = _service.DatabaseAktif ? "🟢 MySQL XAMPP Aktif" : "📁 Flat-File (.txt)";
+            string statusDbSiswa = _service.DatabaseAktif ? "🟢 SQL Server Aktif" : "📁 Flat-File (.txt)";
             _lblGreetingSub.Text = $"Jelajahi koleksi & pantau sirkulasi peminjaman. [Penyimpanan: {statusDbSiswa}]";
         }
 

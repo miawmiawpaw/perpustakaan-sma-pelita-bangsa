@@ -1,9 +1,9 @@
-BK-001|Laskar Pelangi|Andrea Hirata|Rak B-12, Lantai 1|Tersedia|Novel|2005|book-covers/BK-001.jpg
-BK-002|Bumi Manusia|Pramoedya Ananta Toer|Rak B-14, Lantai 1|Tersedia|Novel|1980|book-covers/BK-002.jpg
-BK-003|Negeri 5 Menara|Ahmad Fuadi|Rak B-12, Lantai 1|Tersedia|Novel|2009|book-covers/BK-003.jpg
-BK-004|Filosofi Teras|Henry Manampiring|Rak C-03, Lantai 1|Tersedia|Psikologi|2018|book-covers/BK-004.jpg
-BK-005|Hujan|Tere Liye|Rak B-15, Lantai 1|Tersedia|Novel|2016|book-covers/BK-005.jpg
-BK-006|Pulang|Tere Liye|Rak B-15, Lantai 1|Tersedia|Novel|2015|book-covers/BK-006.jpg
-BK-007|Algoritma dan Pemrograman Java|Rinaldi Munir|Rak B-01, Lantai 1|Dipinjam|Pendidikan|2020|
+BK-001|Harry Potter|J.K Rowling|A-1, Lantai 1|Tersedia|Novel|2000|
+BK-002|Bumi Manusia|Pramoedya Ananta Toer|Rak B-14, Lantai 1|Dipinjam|Novel|1980|
+BK-003|Negeri 5 Menara|Ahmad Fuadi|Rak B-12, Lantai 1|Tersedia|Novel|2009|
+BK-004|Filosofi Teras|Henry Manampiring|Rak C-03, Lantai 1|Tersedia|Psikologi|2018|
+BK-005|Hujan|Tere Liye|Rak B-15, Lantai 1|Dipinjam|Novel|2016|
+BK-006|Pulang|Tere Liye|Rak B-15, Lantai 1|Tersedia|Novel|2015|
+BK-007|Algoritma dan Pemrograman Java|Rinaldi Munir|Rak B-01, Lantai 1|Tersedia|Pendidikan|2020|
 BK-008|Fisika Dasar SMA Kelas XII|Marthen Kanginan|Rak C-02, Lantai 1|Tersedia|Sains|2019|
-BK-009|Sejarah Indonesia Modern|M.C. Ricklefs|Rak D-01, Lantai 1|Tersedia|Sejarah|2008|book-covers/BK-009.jpg
+BK-009|Sejarah Indonesia Modern|M.C. Ricklefs|Rak D-01, Lantai 1|Tersedia|Sejarah|2008|

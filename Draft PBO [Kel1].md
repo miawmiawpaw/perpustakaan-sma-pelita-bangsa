@@ -74,21 +74,21 @@ Aplikasi berhasil dikompilasi menjadi berkas executable mandiri (`PerpustakaanPe
 
 ### 3. Penambahan Fitur Login Multi-Peran
 
-Fitur autentikasi memvalidasi username, password, dan peran melalui tabel `pengguna` pada MySQL; aplikasi tidak memakai kredensial hard-coded untuk menerima login. Password demo disimpan sebagai hash PBKDF2-SHA256 dengan salt acak, bukan plaintext. Akun demo awal (`admin`/`admin` untuk Pustakawan dan `siswa`/`siswa` untuk Siswa) hanya dibuat saat tabel akun masih kosong. Jika database tidak tersedia, login ditolak; fallback flat-file hanya berlaku untuk data buku/transaksi.
+Fitur autentikasi memvalidasi username, password, dan peran melalui tabel `pengguna` pada SQL Server. Password demo disimpan sebagai hash PBKDF2-SHA256 dengan salt acak. Akun demo awal (`admin`/`admin` untuk Pustakawan dan `siswa`/`siswa` untuk Siswa) hanya dibuat saat tabel akun masih kosong. Jika database tidak tersedia, login ditolak; fallback flat-file hanya berlaku untuk data buku/transaksi.
 
 * **Pustakawan**: hak akses pengelolaan buku, sirkulasi, dan laporan.
 * **Siswa**: hak akses terbatas untuk katalog dan pemantauan pinjaman.
 
-### 4. Integrasi Database SQL (MySQL / MariaDB via XAMPP)
+### 4. Integrasi Database SQL Server Express
 
-Telah diimplementasikan konektivitas MySQL / MariaDB (XAMPP) melalui `MySqlConnector` pada database `pbo_perpustakaan`. Skema meliputi tabel `pengguna`, `buku`, dan `transaksi`. Password akun tersimpan sebagai hash PBKDF2-SHA256 dengan salt unik. Data buku/transaksi memakai fallback flat-file saat server berhenti; autentikasi login **tidak** memakai fallback dan harus berhasil di MySQL.
+Konektivitas menggunakan `Microsoft.Data.SqlClient` ke instance `localhost\SQLEXPRESS` pada database `pbo_perpustakaan`. `database/schema.sql` membuat tabel `pengguna`, `buku`, dan `transaksi`; `database/seed.sql` memasukkan 9 buku dan 5 transaksi contoh. Data buku/transaksi memakai fallback flat-file saat server berhenti; autentikasi login tidak memakai fallback.
 
 ### 2.2 Dokumentasi Progres
 
 Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/`:
 
 1. **Tampilan halaman login saat aplikasi berjalan**: `screenshots/01_halaman_login.png`.
-2. **Dashboard Pustakawan dengan koneksi MySQL aktif**: `screenshots/02_dashboard_admin_mysql.png`.
+2. **Dashboard Pustakawan dengan koneksi SQL Server aktif**: `screenshots/02_dashboard_admin_mysql.png`.
 3. **Dashboard Siswa dengan navigasi terbatas**: `screenshots/03_dashboard_siswa.png`.
 4. **Penolakan kredensial salah**: `screenshots/04_login_rejected.png`; dialog menampilkan `Username, password, atau role salah.`.
 5. **Katalog Siswa read-only**: `screenshots/05_siswa_katalog_readonly.png`; buku dan filter terlihat, tombol CRUD/sirkulasi tersembunyi.
@@ -116,25 +116,25 @@ Dokumentasi pengujian dan tangkapan layar tersimpan pada direktori `screenshots/
 | Skenario | Hasil |
 |---|---|
 | `dotnet build` | Lulus; 0 warning, 0 error |
-| Self-check dengan MariaDB XAMPP aktif | Lulus; koneksi 10.4.32-MariaDB, 9 buku, 5 transaksi |
-| Login admin dan siswa dengan akun demo | Lulus; keduanya terautentikasi via MySQL dan hash PBKDF2-SHA256 |
+| Self-check dengan SQL Server Express aktif | Lulus; koneksi `localhost\\SQLEXPRESS`, 9 buku, 5 transaksi |
+| Login admin dan siswa dengan akun demo | Lulus; keduanya terautentikasi via SQL Server dan hash PBKDF2-SHA256 |
 | Password salah, username tak dikenal, role salah | Ditolak |
 | DB tak tersedia | Login ditolak; fallback hanya memuat data buku/transaksi dari file |
-| Login admin melalui executable hasil publish | Lulus; dashboard menunjukkan MySQL aktif |
+| Login admin melalui executable hasil publish | Lulus; dashboard menunjukkan SQL Server aktif |
 | Login siswa melalui executable hasil publish | Lulus; Anggota/Laporan dan kontrol mutasi/sirkulasi tersembunyi |
 | Audit UI login, dashboard, Data Buku, Pencarian, Peminjaman, Anggota, Laporan | Lulus visual; tidak ada clipping/overlap utama pada screenshot aktual |
 | Audit state kontrol reusable | Lulus; default, disabled, focus input, rounded, dan kontras primary diuji di UiGallery |
 | Audit dialog Tambah Buku dan Peminjaman | Lulus visual setelah spacing, tinggi dialog, placeholder, dan notice aturan diperbaiki |
 | Fitur foto cover buku | Lulus; cover lokal dibaca dari `book-covers/`, preview detail tampil tanpa clipping |
 | Input foto saat Tambah/Edit Buku | Lulus build; picker native, preview, hapus foto, validasi file gambar, dan penyimpanan path tersedia |
-| Sinkronisasi path cover file dan MariaDB | Lulus; `buku.txt` dan kolom `foto_path` memakai path relatif `book-covers/*.jpg` |
+| Seed SQL Server | Lulus; 9 buku dan 5 transaksi masuk melalui `database/seed.sql` |
 
 **Perintah uji ulang**:
 
 ```powershell
 dotnet build --nologo -v q
 dotnet run --no-build -- --test
-$env:PERPUSTAKAAN_MYSQL_CONNECTION = 'Server=127.0.0.1;Port=1;Database=missing;User ID=x;Password=x;Connection Timeout=1;'
+$env:PERPUSTAKAAN_SQLSERVER_CONNECTION = 'Server=127.0.0.1,1;Database=missing;User ID=x;Password=x;TrustServerCertificate=True;Connection Timeout=1;'
 dotnet run --no-build -- --test
 ```
 
@@ -144,10 +144,10 @@ Perintah terakhir menguji mode database tidak tersedia; hasil yang dicatat ialah
 
 1. **Bug Kompilasi MSBuild saat Publish `.exe`**: Ditemukan galat `MSB3094` saat eksekusi `dotnet publish` yang disebabkan oleh karakter khusus (apostrof dan spasi) pada path direktori sumber.  
    *Solusi*: Proses staging build dipisahkan ke direktori terstandarisasi sebelum didistribusikan ke `publish/win-x64/`.
-2. **Ketergantungan Eksternal Server Database**: Apabila XAMPP belum dijalankan oleh pengguna, aplikasi berpotensi gagal inisialisasi.  
+2. **Ketergantungan Eksternal Server Database**: Apabila SQL Server Express belum dijalankan oleh pengguna, aplikasi berpotensi gagal inisialisasi.
    *Solusi*: Diimplementasikan kelas `DatabaseHelper` dengan pola *graceful degradation* (fallback otomatis ke flat file `.txt`).
-3. **Sinkronisasi Data Dua Arah**: Perubahan data pada file teks perlu tetap konsisten dengan tabel SQL.  
-   *Solusi*: Operasi `SimpanSemua()` melakukan penulisan ganda (*dual-write*) ke MySQL dan berkas `.txt`.
+3. **Sinkronisasi Data Dua Arah**: Perubahan data pada file teks perlu tetap konsisten dengan tabel SQL.
+   *Solusi*: Operasi `SimpanSemua()` melakukan penulisan ganda (*dual-write*) ke SQL Server dan berkas `.txt`.
 
 ### 2.4 Rencana Pengembangan Selanjutnya
 

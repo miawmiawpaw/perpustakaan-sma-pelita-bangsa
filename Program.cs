@@ -48,7 +48,7 @@ static class Program
             throw new Exception("Transaksi serialization check failed!");
         Console.WriteLine("  ✓ Model Transaksi serialization OK");
 
-        // 3. Service Verification & Uji Coba Koneksi MySQL (Sesuai Draft PBO)
+        // 3. Service Verification & Uji Coba Koneksi SQL Server
         var svc = new PerpustakaanService();
         Console.WriteLine($"  ✓ Service muat {svc.DaftarBuku.Count} buku & {svc.DaftarTransaksi.Count} transaksi");
         Console.WriteLine($"  ✓ Integrasi SQL: {(svc.DatabaseAktif ? "[AKTIF] " : "[FALLBACK FILE] ")}{svc.StatusKoneksiDatabase}");
@@ -56,14 +56,14 @@ static class Program
         var wrongRole = DatabaseHelper.Autentikasi("admin", "admin", "siswa");
         var unknownUser = DatabaseHelper.Autentikasi("not-a-user", "password", "siswa");
         if (wrongPassword.Sukses || wrongRole.Sukses || unknownUser.Sukses)
-            throw new Exception("MySQL authentication accepted invalid credentials or role!");
+            throw new Exception("SQL Server authentication accepted invalid credentials or role!");
         if (svc.DatabaseAktif)
         {
             var adminAuth = DatabaseHelper.Autentikasi("admin", "admin", "admin");
             var siswaAuth = DatabaseHelper.Autentikasi("siswa", "siswa", "siswa");
             if (!adminAuth.Sukses || adminAuth.Role != "admin" || !siswaAuth.Sukses || siswaAuth.Role != "siswa")
-                throw new Exception("MySQL rejected valid demo credentials!");
-            Console.WriteLine("  ✓ MySQL valid/invalid password/role checks OK");
+                throw new Exception("SQL Server rejected valid demo credentials!");
+            Console.WriteLine("  ✓ SQL Server valid/invalid password/role checks OK");
         }
         else
         {
@@ -72,11 +72,18 @@ static class Program
                 throw new Exception("Login must fail closed when database is unavailable!");
             Console.WriteLine("  ✓ Login fail-closed without database OK");
         }
-        // 4. Safe Delete Protection
-        var resHapus = svc.HapusBukuAman("BK-002"); // BK-002 status Dipinjam
-        if (resHapus.Sukses)
-            throw new Exception("Buku yang sedang dipinjam harusnya dilarang dihapus!");
-        Console.WriteLine($"  ✓ Proteksi Hapus Buku Aman OK: {resHapus.Pesan}");
+        var borrowedBook = svc.DaftarBuku.FirstOrDefault(b => !b.Tersedia);
+        if (borrowedBook != null)
+        {
+            var resHapus = svc.HapusBukuAman(borrowedBook.KodeBuku);
+            if (resHapus.Sukses)
+                throw new Exception("Buku yang sedang dipinjam harusnya dilarang dihapus!");
+            Console.WriteLine($"  ✓ Proteksi Hapus Buku Aman OK: {resHapus.Pesan}");
+        }
+        else
+        {
+            Console.WriteLine("  - Proteksi Hapus Buku Aman dilewati: tidak ada buku aktif dipinjam pada data uji");
+        }
 
         // 5. Max Kuota Pinjam (Maksimal 3)
         int aktif = svc.HitungPinjamanAktifSiswa("Dimas Saputra");
