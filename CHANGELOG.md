@@ -8,17 +8,18 @@ All notable project changes are recorded here. This project has no tagged releas
 
 - Replaced `MySqlConnector` with `Microsoft.Data.SqlClient`.
 - Migrated `DatabaseHelper` to SQL Server syntax and `localhost\SQLEXPRESS` Windows Authentication.
-- Replaced MySQL schema types and clauses with SQL Server equivalents.
-- Replaced `REPLACE INTO` writes with SQL Server-compatible update-then-insert statements.
-- Updated self-check messages and project documentation from MySQL/MariaDB to SQL Server Express.
-- Added `database/seed.sql` with 9 catalog books and 5 example transactions.
+- Migrated schema and seed data to SQL Server.
+- Added `database/seed.sql` with 9 catalog books, 5 example transactions, and cover paths.
+- Configured `book-covers/**/*.jpg` to copy into build and publish output.
+- Assigned available covers to `BK-001`–`BK-006` and `BK-009`; `BK-007` and `BK-008` remain without covers because no matching files exist.
+- Updated application and project documentation from MySQL/MariaDB to SQL Server Express.
 
 ### Verification
 
-- `dotnet restore` succeeded.
-- `dotnet build --no-restore` succeeded with 0 warnings and 0 errors.
+- `dotnet build --no-restore`: 0 warnings, 0 errors.
 - SQL Server schema executed successfully in SSMS.
-- Local SQL Server instance `MSSQL$SQLEXPRESS` was observed running.
+- Local SQL Server instance `MSSQL$SQLEXPRESS` observed running.
+- Self-check passed with 9 books and 5 transactions loaded from SQL Server.
 
 ### Setup
 
@@ -27,7 +28,3 @@ Server=localhost\SQLEXPRESS;Database=pbo_perpustakaan;Trusted_Connection=True;Tr
 ```
 
 Demo accounts remain `admin` / `admin` and `siswa` / `siswa`; passwords are seeded as PBKDF2-SHA256 hashes by the application.
-
-## 2026-11-08 — MySQL-backed login and repository documentation
-
-Historical entry. The application has since migrated to SQL Server Express.
