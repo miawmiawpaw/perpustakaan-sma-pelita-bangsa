@@ -628,7 +628,7 @@ public class MainForm : Form
             btn.Click += (s, e) => BeralihMenu(key);
             btn.Visible = true;
             pnlNav.Controls.Add(btn);
-            if (key == "DASBOR") pnlNav.Controls.SetChildIndex(btn, 1);
+            if (key == "DASBOR") pnlNav.Controls.SetChildIndex(btn, 0);
 
             _pages[key] = (btn, view);
         }
