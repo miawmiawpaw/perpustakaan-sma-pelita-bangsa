@@ -460,6 +460,7 @@ public class MainForm : Form
         };
         pnlBrand.Controls.Add(lblBrand1);
         pnlBrand.Controls.Add(lblBrand2);
+        pnlBrand.BringToFront();
 
         // Menu Navigasi Container
         var pnlNav = new FlowLayoutPanel
@@ -471,6 +472,8 @@ public class MainForm : Form
             AutoScroll = true
         };
         sidebar.Controls.Add(pnlNav);
+        sidebar.Controls.SetChildIndex(pnlBrand, 0);
+        sidebar.Controls.SetChildIndex(pnlNav, 1);
 
         var lblMenuHeader = new Label
         {
