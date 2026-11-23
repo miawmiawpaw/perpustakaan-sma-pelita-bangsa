@@ -671,15 +671,15 @@ public class MainForm : Form
     private void SetupSetelahLogin()
     {
         bool isAdmin = _currentUser is Pustakawan;
-        string statusDb = _service.DatabaseAktif ? "🟢 SQL Server aktif" : "📁 Flat-file aktif";
-        string statusDbSiswa = statusDb;
+
         if (isAdmin)
         {
             _lblUserAvatar.Text = "RA";
             _lblUserAvatar.BackColor = C_PRIMARY;
             _lblUserName.Text = "Rina Anggraini";
             _lblUserRole.Text = "Pustakawan Pelita Bangsa";
-            _lblGreetingTitle.Text = "Selamat pagi, Bu Rina";
+            _lblGreetingTitle.Text = "Selamat pagi, Bu Rina 👋";
+            string statusDb = _service.DatabaseAktif ? "🟢 SQL Server Aktif" : "📁 Penyimpanan Flat-File (.txt)";
             _lblGreetingSub.Text = $"Kelola koleksi & sirkulasi hari ini. [Penyimpanan: {statusDb}]";
         }
         else
@@ -689,7 +689,8 @@ public class MainForm : Form
             _lblUserAvatar.BackColor = Color.FromArgb(16, 185, 129);
             _lblUserName.Text = uname.ToUpper();
             _lblUserRole.Text = "Siswa Pelita Bangsa";
-            _lblGreetingTitle.Text = $"Selamat datang, {uname}";
+            _lblGreetingTitle.Text = $"Selamat datang, {uname} 👋";
+            string statusDbSiswa = _service.DatabaseAktif ? "🟢 SQL Server Aktif" : "📁 Flat-File (.txt)";
             _lblGreetingSub.Text = $"Jelajahi koleksi & pantau sirkulasi peminjaman. [Penyimpanan: {statusDbSiswa}]";
         }
 
@@ -720,13 +721,13 @@ public class MainForm : Form
     // =========================================================================
     private Panel BuatViewDasbor()
     {
-        var panel = new Panel { AutoScroll = true, BackColor = Theme.Colors.Cream, Padding = new Padding(8) };
+        var panel = new Panel { AutoScroll = true, BackColor = C_BG_APP };
 
         // Strip Metrik 4 Kartu
         var pnlMetrics = new TableLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 126,
+            Height = 110,
             ColumnCount = 4,
             RowCount = 1
         };
@@ -738,31 +739,25 @@ public class MainForm : Form
             var c = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = accent,
-                Margin = new Padding(8),
-                Padding = new Padding(20, 16, 20, 16)
+                BackColor = Color.White,
+                Margin = new Padding(6),
+                Padding = new Padding(16, 14, 16, 14)
             };
-            c.Paint += (s, e) =>
-            {
-                using var shadow = new SolidBrush(Theme.Colors.BorderStrong);
-                e.Graphics.FillRectangle(shadow, 5, 5, c.Width - 6, c.Height - 6);
-                using var pen = new Pen(Theme.Colors.BorderStrong, 2);
-                e.Graphics.DrawRectangle(pen, 1, 1, c.Width - 8, c.Height - 8);
-            };
+            c.Paint += (s, e) => e.Graphics.DrawRectangle(new Pen(C_BORDER), 0, 0, c.Width - 1, c.Height - 1);
 
             var lT = new Label
             {
                 Text = $"{icon}  {title}",
-                Font = Theme.Fonts.Caption,
-                ForeColor = Theme.Colors.Neutral900,
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = C_TEXT_MUTED,
                 Dock = DockStyle.Top,
                 Height = 22
             };
             lblVal = new Label
             {
                 Text = "0",
-                Font = new Font("Segoe UI", 28f, FontStyle.Bold),
-                ForeColor = Theme.Colors.Neutral900,
+                Font = new Font("Segoe UI", 20f, FontStyle.Bold),
+                ForeColor = accent,
                 Dock = DockStyle.Fill
             };
             c.Controls.Add(lblVal);
@@ -793,26 +788,20 @@ public class MainForm : Form
         var cardRecent = new Panel
         {
             Dock = DockStyle.Fill,
-            BackColor = Theme.Colors.Neutral0,
-            Margin = new Padding(8),
-            Padding = new Padding(20)
+            BackColor = Color.White,
+            Margin = new Padding(6),
+            Padding = new Padding(16)
         };
-        cardRecent.Paint += (s, e) =>
-        {
-            using var shadow = new SolidBrush(Theme.Colors.BorderStrong);
-            e.Graphics.FillRectangle(shadow, 5, 5, cardRecent.Width - 6, cardRecent.Height - 6);
-            using var pen = new Pen(Theme.Colors.BorderStrong, 2);
-            e.Graphics.DrawRectangle(pen, 1, 1, cardRecent.Width - 8, cardRecent.Height - 8);
-        };
+        cardRecent.Paint += (s, e) => e.Graphics.DrawRectangle(new Pen(C_BORDER), 0, 0, cardRecent.Width - 1, cardRecent.Height - 1);
         pnlBody.Controls.Add(cardRecent, 0, 0);
 
         var lblRecentTitle = new Label
         {
-            Text = "Sirkulasi transaksi terbaru",
-            Font = Theme.Fonts.H3,
-            ForeColor = Theme.Colors.Neutral900,
+            Text = "Sirkulasi Transaksi Terbaru",
+            Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
+            ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
-            Height = 42
+            Height = 36
         };
         cardRecent.Controls.Add(lblRecentTitle);
 
@@ -825,30 +814,24 @@ public class MainForm : Form
         cardRecent.Controls.Add(_gridPinjamTerbaru);
         _gridPinjamTerbaru.BringToFront();
 
-        // Kolom Kanan: Buku Populer
+        // Kolom Kanan: Buku Populer & Tindakan Cepat
         var cardRight = new Panel
         {
             Dock = DockStyle.Fill,
-            BackColor = Theme.Colors.Lavender,
-            Margin = new Padding(8),
-            Padding = new Padding(20)
+            BackColor = Color.White,
+            Margin = new Padding(6),
+            Padding = new Padding(16)
         };
-        cardRight.Paint += (s, e) =>
-        {
-            using var shadow = new SolidBrush(Theme.Colors.BorderStrong);
-            e.Graphics.FillRectangle(shadow, 5, 5, cardRight.Width - 6, cardRight.Height - 6);
-            using var pen = new Pen(Theme.Colors.BorderStrong, 2);
-            e.Graphics.DrawRectangle(pen, 1, 1, cardRight.Width - 8, cardRight.Height - 8);
-        };
+        cardRight.Paint += (s, e) => e.Graphics.DrawRectangle(new Pen(C_BORDER), 0, 0, cardRight.Width - 1, cardRight.Height - 1);
         pnlBody.Controls.Add(cardRight, 1, 0);
 
         var lblPopTitle = new Label
         {
-            Text = "Koleksi terpopuler",
-            Font = Theme.Fonts.H3,
-            ForeColor = Theme.Colors.Neutral900,
+            Text = "Koleksi Terpopuler",
+            Font = new Font("Segoe UI", 11.5f, FontStyle.Bold),
+            ForeColor = C_TEXT_DARK,
             Dock = DockStyle.Top,
-            Height = 42
+            Height = 36
         };
         cardRight.Controls.Add(lblPopTitle);
 
