@@ -425,37 +425,40 @@ public class MainForm : Form
     {
         _pnlAppShell = new Panel { Dock = DockStyle.Fill, BackColor = C_BG_APP };
 
-        // --- SIDEBAR KIRI (Width: 240px) ---
+        // --- SIDEBAR KIRI ---
         var sidebar = new Panel
         {
             Dock = DockStyle.Left,
-            Width = 240,
-            BackColor = Color.White
+            Width = Theme.Sizes.Sidebar,
+            BackColor = Color.White,
+            Padding = new Padding(12, 12, 12, 12)
         };
         sidebar.Paint += (s, e) =>
         {
-            e.Graphics.DrawLine(new Pen(C_BORDER, 1), sidebar.Width - 1, 0, sidebar.Width - 1, sidebar.Height);
+            using var pen = new Pen(Theme.Colors.BorderStrong, 2);
+            e.Graphics.DrawLine(pen, sidebar.Width - 1, 0, sidebar.Width - 1, sidebar.Height);
         };
         _pnlAppShell.Controls.Add(sidebar);
 
         // Brand Logo Atas
-        var pnlBrand = new Panel { Dock = DockStyle.Top, Height = 80, Padding = new Padding(16, 18, 16, 12) };
+        var pnlBrand = new Panel { Dock = DockStyle.Top, Height = 96, Padding = new Padding(12, 14, 12, 12), BackColor = Theme.Colors.Yellow };
+        pnlBrand.Paint += (s, e) => { using var pen = new Pen(Theme.Colors.BorderStrong, 2); e.Graphics.DrawRectangle(pen, 0, 0, pnlBrand.Width - 1, pnlBrand.Height - 1); };
         sidebar.Controls.Add(pnlBrand);
 
         var lblBrand1 = new Label
         {
-            Text = "Perpustakaan",
-            Font = new Font("Segoe UI", 12f, FontStyle.Bold),
-            ForeColor = C_PRIMARY,
-            Location = new Point(14, 16),
+            Text = "◈ pelita pustaka",
+            Font = new Font("Segoe UI", 15f, FontStyle.Bold),
+            ForeColor = Theme.Colors.Neutral900,
+            Location = new Point(12, 14),
             AutoSize = true
         };
         var lblBrand2 = new Label
         {
-            Text = "SMA Pelita Bangsa",
-            Font = new Font("Segoe UI", 9f, FontStyle.Regular),
-            ForeColor = C_TEXT_MUTED,
-            Location = new Point(16, 40),
+            Text = "SMA PELITA BANGSA",
+            Font = Theme.Fonts.Caption,
+            ForeColor = Theme.Colors.Neutral900,
+            Location = new Point(14, 52),
             AutoSize = true
         };
         pnlBrand.Controls.Add(lblBrand1);
@@ -467,17 +470,18 @@ public class MainForm : Form
             Dock = DockStyle.Fill,
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
-            Padding = new Padding(10, 10, 10, 10),
-            AutoScroll = true
+            Padding = new Padding(8, 18, 8, 10),
+            AutoScroll = true,
+            BackColor = Color.White
         };
         sidebar.Controls.Add(pnlNav);
 
         var lblMenuHeader = new Label
         {
-            Text = "RUANG KERJA",
-            Font = new Font("Segoe UI", 8f, FontStyle.Bold),
-            ForeColor = Color.FromArgb(148, 163, 184),
-            Margin = new Padding(10, 10, 0, 8),
+            Text = "RUANG SISWA / ADMIN",
+            Font = Theme.Fonts.Caption,
+            ForeColor = Theme.Colors.Neutral500,
+            Margin = new Padding(8, 8, 0, 10),
             AutoSize = true
         };
         pnlNav.Controls.Add(lblMenuHeader);
@@ -1955,16 +1959,16 @@ public class MainForm : Form
         UpdateRegion(control, EventArgs.Empty);
     }
 
-    // Helper Pembuat DataGridView Standar dengan Style Flat Modern
+    // Helper DataGridView dengan outline dan palette neo-brutalist
     private static DataGridView BuatGridStandar()
     {
         var grid = new DataGridView
         {
             Dock = DockStyle.Fill,
-            BackgroundColor = Color.White,
-            BorderStyle = BorderStyle.None,
+            BackgroundColor = Theme.Colors.Neutral0,
+            BorderStyle = BorderStyle.FixedSingle,
             CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
-            GridColor = Color.FromArgb(241, 245, 249),
+            GridColor = Theme.Colors.Neutral200,
             RowHeadersVisible = false,
             AllowUserToAddRows = false,
             AllowUserToDeleteRows = false,
@@ -1972,41 +1976,38 @@ public class MainForm : Form
             SelectionMode = DataGridViewSelectionMode.FullRowSelect,
             MultiSelect = false,
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-            RowTemplate = { Height = 40 }
+            RowTemplate = { Height = Theme.Sizes.TableRow }
         };
 
         grid.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = C_PRIMARY,
+            BackColor = Theme.Colors.Primary700,
             ForeColor = Color.White,
-            Font = new Font("Segoe UI", 9f, FontStyle.Bold),
+            Font = Theme.Fonts.Caption,
             Alignment = DataGridViewContentAlignment.MiddleLeft,
             Padding = new Padding(10, 0, 10, 0),
-            SelectionBackColor = C_PRIMARY,
+            SelectionBackColor = Theme.Colors.Primary700,
             SelectionForeColor = Color.White
         };
-        grid.ColumnHeadersHeight = 48;
+        grid.ColumnHeadersHeight = Theme.Sizes.TableHeader;
         grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+        grid.EnableHeadersVisualStyles = false;
         grid.AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = Color.FromArgb(248, 250, 252),
+            BackColor = Theme.Colors.Neutral50,
             WrapMode = DataGridViewTriState.True
         };
-        grid.EnableHeadersVisualStyles = false;
-
         grid.DefaultCellStyle = new DataGridViewCellStyle
         {
-            BackColor = Color.White,
-            ForeColor = Color.FromArgb(15, 23, 42),
-            Font = new Font("Segoe UI", 9f),
-            SelectionBackColor = Color.FromArgb(239, 246, 255),
-            SelectionForeColor = Color.FromArgb(29, 59, 139),
-            Padding = new Padding(8, 4, 8, 4),
+            BackColor = Theme.Colors.Neutral0,
+            ForeColor = Theme.Colors.Neutral900,
+            Font = Theme.Fonts.Body,
+            SelectionBackColor = Theme.Colors.Primary100,
+            SelectionForeColor = Theme.Colors.Neutral900,
+            Padding = new Padding(8, 5, 8, 5),
             WrapMode = DataGridViewTriState.True
         };
         grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders;
-
         return grid;
     }
 }
