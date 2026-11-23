@@ -42,7 +42,7 @@ public class DialogTambahBuku : Form
         AutoScroll = true;
         AcceptButton = _btnSimpan;
         CancelButton = _btnBatal;
-        BackColor = Theme.Colors.Cream;
+        BackColor = Theme.Colors.Neutral50;
         Font = Theme.Fonts.Body;
 
         var panel = new Panel
@@ -84,8 +84,6 @@ public class DialogTambahBuku : Form
             {
                 tb.ReadOnly = readOnly;
                 tb.BorderStyle = BorderStyle.FixedSingle;
-                tb.BackColor = Theme.Colors.Neutral0;
-                tb.ForeColor = Theme.Colors.Neutral900;
             }
             panel.Controls.Add(ctrl);
             y += Theme.Spacing.S6;

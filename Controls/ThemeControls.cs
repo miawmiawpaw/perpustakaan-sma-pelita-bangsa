@@ -10,7 +10,7 @@ public class RoundedPanel : Panel
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int CornerRadius { get; set; } = Theme.Radius.Large;
     [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Color BorderColor { get; set; } = Theme.Colors.BorderStrong;
+    public Color BorderColor { get; set; } = Theme.Colors.Neutral200;
 
     public RoundedPanel()
     {
@@ -23,9 +23,7 @@ public class RoundedPanel : Panel
     {
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
         using var path = CreatePath(ClientRectangle, CornerRadius);
-        using var fill = new SolidBrush(BackColor);
-        using var pen = new Pen(BorderColor, 2);
-        e.Graphics.FillPath(fill, path);
+        using var pen = new Pen(BorderColor);
         e.Graphics.DrawPath(pen, path);
         base.OnPaint(e);
     }
@@ -78,15 +76,13 @@ public class RoundedButton : Button
         bounds.Width--;
         bounds.Height--;
         using var path = RoundedPanel.CreatePath(bounds, CornerRadius);
-        using var shadow = new SolidBrush(Theme.Colors.BorderStrong);
-        e.Graphics.FillPath(shadow, RoundedPanel.CreatePath(new Rectangle(4, 5, bounds.Width, bounds.Height), CornerRadius));
         using var fill = new SolidBrush(BackColorForState());
-        using var border = new Pen(BorderColorForState(), 2);
+        using var border = new Pen(BorderColorForState());
         e.Graphics.FillPath(fill, path);
         e.Graphics.DrawPath(border, path);
         Color textColor = Variant switch
         {
-            ButtonVariant.Danger => Theme.Colors.Neutral900,
+            ButtonVariant.Danger => Theme.Colors.DangerText,
             ButtonVariant.Secondary or ButtonVariant.Ghost => Theme.Colors.Neutral900,
             _ => Color.White
         };
