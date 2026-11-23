@@ -626,7 +626,9 @@ public class MainForm : Form
             btn.FlatAppearance.BorderSize = 0;
 
             btn.Click += (s, e) => BeralihMenu(key);
+            btn.Visible = true;
             pnlNav.Controls.Add(btn);
+            if (key == "DASBOR") pnlNav.Controls.SetChildIndex(btn, 1);
 
             _pages[key] = (btn, view);
         }
