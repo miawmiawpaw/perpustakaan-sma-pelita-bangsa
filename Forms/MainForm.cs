@@ -478,7 +478,8 @@ public class MainForm : Form
             Font = new Font("Segoe UI", 8f, FontStyle.Bold),
             ForeColor = Color.FromArgb(148, 163, 184),
             Margin = new Padding(10, 10, 0, 8),
-            AutoSize = true
+            AutoSize = true,
+            Visible = false
         };
         pnlNav.Controls.Add(lblMenuHeader);
 
